@@ -1,0 +1,182 @@
+
+Dis   68000 disassembler
+Greg Lee, February, 1986
+
+The program Dis, its source code, and
+this document are in the public domain.
+
+      Commands to Dis are:
+
+	 <CR>, which repeats the last listing command ('l','b','B','d', or
+	       'a') 21 times
+	 <command-letter><CR>, where command-letter is a single character
+	       from the list below
+	 <command-letter><argument><CR>, where the argument follows
+	       immediately after the command-letter
+
+In the list below, arguments in '[...]' are optional, and 'addr' is
+either a hexadecimal number or a symbol. One must enter numbers
+beginning with digits A-F with a leading 0, so they can be distinguished
+from symbols. Note that there is no provision for ignoring spaces before
+or after the command-letter.
+
+ command    argument  what it does
+
+      l      [addr]    list instructions
+			Instructions are disassembled in a format which
+			would be acceptable to a standard assembler, except
+			that program counter relative references are given
+			as hex addresses without a leading '$'.  Such
+			addresses would have to be assigned a symbolic
+			value before any reassembly.
+      b      [addr]    build symbols
+			This does the same as 'l' above, except that symbols
+			are made and added to the symbol table for any
+			operand references which are PC relative, or
+			absolute long. Symbols are not constructed for
+			immediate opereands. Symbols are given types
+			if they appear to be references to data (see the
+			note below on symbol types). The operand of LEA
+			is assumed by Dis to refer to instructions,
+			although this is usually not the case. The target
+			of JSR or BSR is given a symbol beginning with 'R',
+			which will cause a preceding blank line when it is
+			listed as a label.
+      B      [addr]    Build locals
+			This does the same as 'l' above, except that certain
+			symbols that were probably made with the 'b' command
+			are replaced with local labels of the form '1$',
+			'2$',...,'999$'. The labels susceptible to
+			replacement are those which begin with 'l' and are
+			7 characters in length. When a label not of this
+			form is encountered in the listing, a counter is
+			reset so that the next local generated will be '1$'.
+      d      [addr]    dump in hex
+      a      [addr]    ascii dump
+      /      addr      address is this
+			This assigns a new current address for the next
+			listing command or symbol assignment, but
+			nothing is listed. Convenient for assigning a
+			symbol to an IO location which should not be
+			accessed.
+      =      <symbol>  add symbol to table
+			The string following the '=' is stored in the
+			symbol table with a value equal to the address of
+			the last instruction or data that was listed.
+			The space available for the table is fixed at
+			1600 symbols containing 11,200 characters. Space
+			occupied by no longer used symbols is not
+			automatically reclaimed, but it may be reclaimed
+			by saving the table to disk, then reading it back.
+      r      [<name>]  read file (symtab)
+			A file of symbols and the addresses to which they
+			refer is read from disk into Dis's symbol table.
+			Any symbols already in the table are lost.
+			The file will commonly have been created by by
+			the 's' command below, but it could have been
+			made or modified with an editor. Each line of
+			the file should either be empty or consist of
+			a hex number followed by exactly one space, and
+			then the string of characters that is to make
+			up the symbol name.
+      s      [<name>]  save to file (symtab)
+			Any symbols currently in the table are saved in
+			the file for future use. For both 'r' and 's', if
+			no name is given, 'symtab' is assumed.
+      q                quit
+			Exit to AmigaDos.
+      w      <num>     where is this word?
+      W      <num>     where is this longword?
+			These two commands start searching memory at
+			the current listing address, but skip memory
+			from 80000 to FC0000.
+      f      <name>    file to disassemble
+			The requested file is loaded and its first
+			instruction is listed. The file must be a load
+			module. If for some reason the file could not be
+			loaded, the IO error code is shown in hex.
+      >                next code segment
+			The segments of a load module are scattered in
+			memory by the AmigaDos loader. This command
+			alters the current listing address to the beginning
+			of the code segment after the current one (which
+			is the first segment, after a successful use of
+			the 'f' command). If nothing is listed, this means
+			there is no next segment (or, in 'p' mode, that the
+			next segment is empty).
+      <                first code segment
+			After one or more uses of the '>' command, you
+			might want to go back and look at the first
+			segment again.
+      o      [num]     offset addresses
+			All address references are adjusted by subtracting
+			the number before being displayed. If no number
+			is given, the last listing address is used. This
+			command is of little use, given the availability
+			of the below 'p' command.
+      p                offset by segment toggle
+			After a file is loaded with the 'f' command, this
+			will adjust all displayed addresses to offsets
+			from the beginning of the first segment. Thus
+			the segments will appear to occur in memory in
+			the same order they occupied the the load file.
+			In addition, the listing of memory locations
+			outside any segment of the loaded file is
+			suppressed, and after 'b', symbols are not
+			constructed for references outside the loaded
+			file. 'p' mode is automatic after loading a file.
+      k<name>          keep output in file
+			Subsequent listing output to the screen will also
+			be kept in the named file (possibly for subsequent
+			reassembly). The saving continues until you exit
+			with the 'q' command.
+      t                trim toggle
+			Suppresses or enables the display of addresses at
+			the left-hand side of the screen.
+      n<num>           print n lines after <CR>
+
+
+Notes on symbols.
+
+      Symbols may be up to 255 characters and may contain any
+non-control characters.  A symbol may not be associated with the
+value zero or a value greater than 7FFFFFFFH. Symbols are case sensitive.
+
+      There are some special conventions for symbols.  A symbol may
+carry information about the type of data being disassembled.  If a
+symbol starts with '.' and one of the letters 'b','a','w','l','c','i', then
+code at this and subsequent locations will be treated as bytes, ascii
+characters, words, longwords, a constant block, or instructions,
+respectively.  Otherwise, it will be treated as instructions.  Two character
+symbols beginning with '.' are not listed, since they are assumed to be
+intended to carry only type information.
+
+      When a symbol starts with '.c', Dis displays 'dcb.b  <length>,<value>'
+where the value is that of the byte found at the address of the symbol
+and subsequent memory locations, and the length is the count of the number
+of bytes in the block. The block is considered to end when:
+	 a byte with a different value is encountered,
+	 an address with an associated symbol is found,
+      or in 'p' mode the end of a segment is reached.
+Dis does not do the counting of bytes in blocks very efficiently when there
+are lots of symbols in the table, so after 'dcb.b' has been displayed,
+some patience may be required.
+
+      It is possible for a symbol to be concealed and not listed as a
+label at the left of the screen in some circumstances. This will happen
+when its address comes within an instruction being listed, or when its
+address is odd and a preceding address was listed as 'dc.w' or 'dc.l'.
+However, if a symbol with a following even address would be concealed by a
+'dc.l' listing, this is prevented by listing data as bytes rather than
+as a longword. In 'p' mode, this is also done one word away from the
+end of a segment so as not to show data outside the segment.
+
+      Symbols beginning with asterisks may be used to enter comments,
+in which case they are not listed as operands, but only as labels.
+If a single address is to have both a comment and an ordinary label
+associated with it, the comment should be entered after the ordinary
+label (else the comment will be lost).  Multiple comments for a single
+address are listed in the order in which they were entered. Once a
+comment has been entered, it can be eliminated only in the way just
+mentioned, or by saving the symbol table and editing it.
+
