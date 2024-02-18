@@ -1,0 +1,96 @@
+WBStartup
+ 
+; flags for InitCopList
+#smoothscroll   = $10
+#dualplayfield  = $20
+#halfbrite      = $40
+#ham            = $80
+ 
+#lores          = $000
+#hires          = $100
+#super          = $200
+ 
+#loressprites   = $400
+#hiressprites   = $800
+#supersprites   = $c00
+ 
+#fmode0         = $0000
+#fmode1         = $1000
+#fmode2         = $2000
+#fmode3         = $3000
+ 
+#agapal         = $10000
+#agahi	        = $10100
+ 
+#agalowres      = #agapal|8
+#agahires		= #agahi|8
+ 
+; Objects
+#PALETTE_DISPLAY    = 0
+ 
+#BITMAP_DISPLAY     = 0
+#BITMAP_DISPLAY2_   = 1
+#BITMAP_SPRITESHEET = 2
+ 
+#SHAPE_DUMMY        = 0
+ 
+#BUFFER_BASE        = 0
+#BUFFER_BASE2_      = 1
+ 
+#COPPERLIST_DISPLAY = 0
+ 
+; Playfield specs
+#PLAYFIELD_WIDTH  = 640
+#PLAYFIELD_HEIGHT = 400
+#PLAYFIELD_DEPTH  = 8
+ 
+; Allocate Bitmaps
+BitMap #BITMAP_DISPLAY     , #PLAYFIELD_WIDTH, #PLAYFIELD_HEIGHT, #PLAYFIELD_DEPTH
+BitMap #BITMAP_DISPLAY2_   , #PLAYFIELD_WIDTH, #PLAYFIELD_HEIGHT, #PLAYFIELD_DEPTH
+BitMap #BITMAP_SPRITESHEET , 640,  400, 6
+ 
+Buffer #BUFFER_BASE , 2*32768
+Buffer #BUFFER_BASE2_,2*32768
+ 
+; Load sprite sheet
+LoadBitMap #BITMAP_SPRITESHEET, "Sewers640x400_64color.iff",#PALETTE_DISPLAY
+LoadBitMap #BITMAP_DISPLAY, "Sewers640x400_64color.iff",#PALETTE_DISPLAY
+;LoadBitMap #BITMAP_DISPLAY2_, "Sewers640x400_64color.iff",#PALETTE_DISPLAY
+
+AutoCookie On
+
+GetaShape #SHAPE_DUMMY,5*32,32,32,32
+
+; getashape n,x,y,w,h
+; where n is shape number, x and y are top left coordinates and w and h are width and height of the desired shape in pixels.
+ 
+; goto blitzmode
+BLITZ
+ 
+InitCopList #COPPERLIST_DISPLAY,23,#PLAYFIELD_HEIGHT,$13100,0,2^#PLAYFIELD_DEPTH,0
+;InitCopList #COPPERLIST_DISPLAY,23,#PLAYFIELD_HEIGHT,#agahires,0,2^#PLAYFIELD_DEPTH,0
+DisplayPalette #COPPERLIST_DISPLAY,#PALETTE_DISPLAY
+CreateDisplay #COPPERLIST_DISPLAY
+BlitMode CookieMode
+ 
+db.w = 0 ; current buffer, 0 or 1
+x.w  = 0 ; x pos
+y.w  = 0 ; y pos
+ 
+Repeat
+  VWait
+  x+xv : y+yv
+  If x>=#PLAYFIELD_WIDTH-ShapeWidth(#SHAPE_DUMMY) Then xv=-1
+  If x<= 0 Then xv=1
+  If y>=#PLAYFIELD_HEIGHT-ShapeHeight(#SHAPE_DUMMY) Then yv=-1
+  If y<= 0 Then yv=1
+ 
+  DisplayBitMap #COPPERLIST_DISPLAY,#BITMAP_DISPLAY+db
+  db=1-db
+  Use BitMap #BITMAP_DISPLAY+db
+  UnBuffer #BUFFER_BASE+db
+  BBlit #BUFFER_BASE+db, #SHAPE_DUMMY,x,y, Off
+Until Joyb(0)
+ 
+End
+

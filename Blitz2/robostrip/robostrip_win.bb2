@@ -1,0 +1,33 @@
+WbStartup:NoCli
+   BitMap 0, 320, 200, 8
+   BitMap 1, 320, 200, 8
+   BitMap 2, 320, 200, 8
+
+   LoadBitMap 0
+   LoadPalette 0
+
+   Blitz
+   AutoCookie On
+
+   Buffer 0, 2*16384: Buffer 1,2*16384
+   InitCopList 0, $10038
+   DisplayPalette 0,0
+   CreateDisplay 0
+ 
+   Repeat
+     Vwait
+     DisplayBitMap 0,0
+     GetaShape 0,0,0,32,32
+     BlitMode CookieMode
+   
+     MakeCookie 0
+
+     db=1-db
+     UnBuffer db
+     Use BitMap db
+     BBlit db, 0,0,0, On
+Until Joyb(0)=1
+Free DisplayBitMap 0
+Free DisplayPalette 0
+Free BitMap 0
+
