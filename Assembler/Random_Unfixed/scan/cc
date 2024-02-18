@@ -1,0 +1,27 @@
+.Key file,opt1,opt2,opt3
+;
+; Compile a C program  Version 3.00
+; Works with Lattice C Version 3.02 and above
+;
+if not exists <file$t1>.c
+   echo "Aborted, file <file$t1>.c not found!"
+   skip END
+endif
+
+echo "*nCOMPILING: <file$t1>.c *n"
+
+lc1 <opt1> <opt2> <opt3> -idf0:include/ -idf0:include/lattice/ <file$t1>
+if not exists "<file$t1>.q"
+   echo "Compile failed.*n"
+   skip END
+endif
+
+lc2 <file$t1>
+
+echo "*nLINKING: <file$t1>.o to <file$t1> *n"
+
+alink df0:lib/Lstartup.obj+<file$t1>.o library df0:lib/lc.lib+df0:lib/amiga.lib to <file$t1> map nil:
+
+delete <file$t1>.o
+echo "DONE!"
+lab END

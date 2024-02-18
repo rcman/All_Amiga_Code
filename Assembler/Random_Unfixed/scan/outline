@@ -1,0 +1,74 @@
+                        Course Outline
+                        ______________
+
+
+Class Schedule
+--------------
+     The class will meet for twelve weeks, three hours per week.  Usually,
+the first half of the class will be a lecture, and the second half of the
+class will be spent in the computer lab (B122) working on C programs.
+
+Evaluation
+----------
+              Tests (3)          60%
+              Assignments (3)    40%
+                                ____
+              Total             100%
+
+
+          Assignments:                            Tests:
+                     1 - 10/03/89  8%                1 - 10/10/89  25%
+                     2 - 10/17/89 12%                2 - 11/07/89  25%
+                     3 - 11/07/89 20%                3 - 12/05/89  50%
+                                  ---                             ----
+                                  40%                       .6 x  100%
+
+
+
+                 Schedule
+                ----------
+
+Lecture
+-------
+   1.           Unix and C, Using Unix.
+                Type in a small program.
+
+   2.           Data Types, printf, syntax, operators
+                Use of comments.
+
+   3.           Preprocessor statements, Flow of control
+                Assignment # 1
+
+   4.           Loops, Input using scanf.
+                TEST # 1.
+
+   5.           Use of switch, break, continue.  I/O using putc, getc
+                Assignment # 2.
+
+
+
+                 Schedule
+                ----------
+
+Lecture
+-------
+   6.           Functions, ccccalculate and return a value
+                argument passing.
+
+   7.           More on Functions, global and automatic variables.
+                recursive functions.
+
+   8.           Arrays,  Test # 2, Assignment #3
+                one and multi-dimensional
+
+   9.           Pointers, concept of indirection, defining a pointer
+                pointer syntax
+
+  10.           More on pointers, pointer arithmetic
+                passing pointers to a function
+
+  11.           Review of the course.
+
+  12.           Overview on Advanced C
+                TEST # 3
+

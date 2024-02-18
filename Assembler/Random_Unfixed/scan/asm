@@ -1,0 +1,4 @@
+.key filen
+assem <filen>.asm -o <filen>.o
+blink <filen>.o to <filen>
+delete <filen>.o
