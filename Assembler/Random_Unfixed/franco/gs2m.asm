@@ -364,7 +364,7 @@ gfxname:       dc.b    'graphics.library',0
        
 dosname:       dc.b    'dos.library',0
        
-dosfile        dc.b    'dh0:assem/picture1',0
+dosfile        dc.b    'picture1',0
        
 sname:         dc.b    'Our Screen',0 ;Screen Title
        

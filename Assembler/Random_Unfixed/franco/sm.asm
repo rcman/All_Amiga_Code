@@ -1,8 +1,6 @@
 * Bob Attempt
  include "exec/types.i"
  include "intuition/intuition.i"
- include "graphics/gels.i"
-* include "graphics/rastport.i"
 
 movescreen  equ -162
 openscreen  equ -198
@@ -13,52 +11,13 @@ execbase    equ  4        ;EXEC base address
 joy2        equ $dff00c   ;joystick 2 Data
 fire        equ $bfe001   ;fire button 2:Bit 7
 setrgb4     equ  -288
-AddBob		equ	-96
-DrawGList	equ	-114
-InitGels	equ	-120
-InitMasks	equ	-126
-SortGList	equ	-150
+
 
 run:
        bsr     openint         ;Open library
        bsr     scropen         ;Open Screen
        
-	lea 	gelinfo(pc),a2
-	move.l	#0,gi_nextLine(a2)
-	move.l	#0,gi_lastColor(a2)
-	lea 	colltable(pc),a4
-	move.l	a4,gi_collHandler(a2)
-
-
-	lea	v,a0
-	move.l	a0,a1
-	move.l	gfxbase,a6	
- 	jsr	InitGels(a6)
-
-	lea 	gelinfo(pc),a2
-	move.l	raster,a4
-	move.l  a2,(a4)
-
-	lea 	bob,a1
-	lea	v,a0
-	move.l	a1,vs_VSBob(a0)
-	move.l	gfxbase,a6
-	jsr	InitMasks(a6)
-
-	move.l	raster,a1
-	lea 	bob,a0
-	move.l	gfxbase,a6
-	jsr	AddBob(a6)
-
-	move.l	raster,a1
-	move.l	gfxbase,a6
-	jsr	SortGList(a6)
-
-	move.l	raster,a1
-	move.l	viewport,a0
-	move.l	gfxbase,a6
-	jsr	DrawGList(a6)
-
+		
  
 ;       move.l  bitplane1,a1
 ;       add.l   #4019,a1
@@ -130,7 +89,7 @@ scropen:
 	move.l  $c0(a0),bitplane1       ;get pointer to bit plane # 1
         move.l  $c4(a0),bitplane2       ;get pointer to bit plane # 2
         move.l  $2c(a0),viewport        ;get pointer to view port
-        move.l  RastPort(a0),raster
+        move.l  RastPort(a0),Raster
 	move.l  execbase,a6             ;EXEC base address
    	lea     gfxname,a1              ;name of graphics library
 	jsr     openlib(a6)             ;Open graphics library
@@ -180,7 +139,7 @@ gfxname:       dc.b    'graphics.library',0
 
 sname:         dc.b    'BOB Screen',0 ;Screen Title
        cnop 0,2
-raster:      dc.l    0
+Raster:      dc.l    0
 viewport:      dc.l    0
 gfxbase:       dc.l    0
 
@@ -190,97 +149,9 @@ bitplane2:     dc.l    0
 man:           dc.b    1,$80,2,$40,1,$80,7,$e0,$d,$b0,9,$90
                dc.b    $11,$88,3,$c0,2,$40,6,$60,$c0,$30,$18,$18
 
-
-bob:
-		dc.l	0
-		dc.l	savebuffer
-		dc.l	imageshadow
-		dc.l	0		;before
-		dc.l	0		;after		
-		dc.l	v
-		dc.l	0
-		dc.l	0
-		dc.l	0
-		dc.l	0
-
-savebuffer:	ds.l	100
-imageshadow:	ds.l	100
-cmask:		ds.l	200
-bline:		ds.l	200
-
-v:		dc.l	0
-		dc.l	0
-		dc.l	0
-		dc.l	0
-		dc.l	0
-		dc.w	6
-		dc.w	53	;Y
-		dc.w	80	;X
-		dc.w	20	;height
-		dc.w	4	;width
-		dc.w	2	;depth
-		dc.w	1
-		dc.w	1
-		dc.l	imagedata
-		dc.l	bline
-		dc.l	cmask
-		dc.l	0
-		dc.l	0
-		dc.b	7,0
-		dc.l	0,0,0,0,0
-		
-gelinfo:	ds.l    gi_SIZEOF
-		
-colltable:	ds.l	20	
+       end
 
 
 
-imagedata:
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
-		dc.l	2312,23183,1821,12837
-		dc.l	135182,1283828,9199222,2933
-		dc.l	93832298,94482829,36623737,2728383
+
+
