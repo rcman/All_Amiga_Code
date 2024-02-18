@@ -1,0 +1,61 @@
+[4;1medit                    07-Feb-92 10:08:13  Hunk Section                Page 1-1[0m
+
+[4m num[0m [4mhunk    [0m [4m    size[0m [4mfilename        [0m [4mpunit   [0m [4mtype    [0m [4m    base[0m [4m alv[0m
+   0 text         1214 SYS:lc/lib/c.o   c        code            0    0
+                       edit.o           edit.c   code          1ac    0
+                       SYS:lc/lib/lc.li fpinit.c code          1c4    0
+                       SYS:lc/lib/lc.li write.c  code          1c8    1
+                       SYS:lc/lib/lc.li uwrites. code          230    1
+                       SYS:lc/lib/lc.li uufbs.c  code          29c    0
+                       SYS:lc/lib/lc.li utprintf code          29c    0
+                       SYS:lc/lib/lc.li upool.c  code          3ec    0
+                       SYS:lc/lib/lc.li umain.c  code          3ec    5
+                       SYS:lc/lib/lc.li uiob.c   code          5fc    0
+                       SYS:lc/lib/lc.li ugetbf.c code          5fc    2
+                       SYS:lc/lib/lc.li ufmode.c code          65c    0
+                       SYS:lc/lib/lc.li uflsbf.c code          65c    0
+                       SYS:lc/lib/lc.li uexit.c  code          8f8    1
+                       SYS:lc/lib/lc.li ucxovf   code          950    1
+                       SYS:lc/lib/lc.li strncat. code          96c    0
+                       SYS:lc/lib/lc.li stcl_d   code          9c4    0
+                       SYS:lc/lib/lc.li rlsml.c  code          9fc    1
+                       SYS:lc/lib/lc.li read.c   code          af4    0
+                       SYS:lc/lib/lc.li memclean code          b3c    0
+                       SYS:lc/lib/lc.li lseek.c  code          b6c    1
+                       SYS:lc/lib/lc.li lsbrk.c  code          bbc    2
+                       SYS:lc/lib/lc.li getml.c  code          c2c    1
+                       SYS:lc/lib/lc.li getmem.c code          cf0    0
+                       SYS:lc/lib/lc.li exit.c   code          d04    0
+                       SYS:lc/lib/lc.li error.c  code          d58    0
+                       SYS:lc/lib/lc.li dwrite.c code          d58    0
+                       SYS:lc/lib/lc.li dseek.c  code          da4    0
+                       SYS:lc/lib/lc.li dread.c  code          e20    0
+                       SYS:lc/lib/lc.li dclose.c code          e6c    0
+                       SYS:lc/lib/lc.li cxovf.c  code          e8c    2
+                       SYS:lc/lib/lc.li cxm33    code          f40    0
+                       SYS:lc/lib/lc.li cxd33    code          f60    0
+                       SYS:lc/lib/lc.li cxbrk.c  code         1024    0
+                       SYS:lc/lib/lc.li chkufb.c code         1150    0
+                       SYS:lc/lib/lc.li chkabort code         1190    0
+                       SYS:lc/lib/lc.li bufsiz.c code         11e0    0
+                       SYS:lc/lib/lc.li autoreq  code         11e0    0
+   1 __MERGED      130 edit.o           edit.c   data            0    0
+                       SYS:lc/lib/lc.li uufbs.c  data           18    0
+                       SYS:lc/lib/lc.li upool.c  data           1c    0
+                       SYS:lc/lib/lc.li uiob.c   data           30    0
+                       SYS:lc/lib/lc.li ufmode.c data           98    0
+                       SYS:lc/lib/lc.li mstep    data           9c    0
+                       SYS:lc/lib/lc.li cxovf.c  data           a0    0
+                       SYS:lc/lib/lc.li cxbrk.c  data           dc    0
+                       SYS:lc/lib/lc.li bufsiz.c data          12c    0
+                       SYS:lc/lib/c.o   c        bss           130    0
+                       edit.o           edit.c   bss           17c    0
+                       SYS:lc/lib/lc.li uufbs.c  bss          76ac    0
+                       SYS:lc/lib/lc.li umain.c  bss          77ec    0
+                       SYS:lc/lib/lc.li memclean bss          78b0    0
+                       SYS:lc/lib/lc.li intubase bss          78bc    0
+[4;1medit                    07-Feb-92 10:08:13  Hunk Section                Page 1-2[0m
+
+[4m num[0m [4mhunk    [0m [4m    size[0m [4mfilename        [0m [4mpunit   [0m [4mtype    [0m [4m    base[0m [4m alv[0m
+                       SYS:lc/lib/lc.li error.c  bss          78c0    0
+                       SYS:lc/lib/lc.li dosbase  bss          78c4    0

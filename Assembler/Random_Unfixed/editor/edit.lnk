@@ -1,0 +1,6 @@
+FROM SYS:lc/lib/c.o+edit.o
+TO edit
+LIB SYS:lc/lib/lc.lib+SYS:lc/lib/amiga.lib
+NODEBUG
+BATCH
+MAP edit.map
