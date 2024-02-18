@@ -1,0 +1,149 @@
+DIM man%(100,2),alien(80,6)
+
+GOSUB setupdata
+
+start:
+CLS
+GOSUB setupaliencoor
+
+y=0
+mainloop:
+IF s=1 THEN s=0 : GOTO here
+IF alien(1,1)>=340 THEN x=-10 : y=15 : y1 = 0:s=1
+IF alien(1,1)<=20 THEN x=10 : y=15 : y1 = 0 :s=1
+here:
+FOR i=1 TO 50
+  IF alien(i,6) THEN PUT (alien(i,4),alien(i,5)),man%(0,mo)
+  IF alien(i,3) THEN PUT (alien(i,1),alien(i,2)),man%(0,m)
+  alien(i,4)=alien(i,1)
+  alien(i,5)=alien(i,2)
+  alien(i,6)=alien(i,3)
+  alien(i,1)=alien(i,1)+x * y1
+  alien(i,2)=alien(i,2)+y
+NEXT i  
+f=1 :y=0 :y1 =1
+mo=m
+IF m=0 THEN m=1 ELSE m=0
+GOTO mainloop
+
+END
+
+setupaliencoor:
+
+RESTORE aliencoor
+FOR i=1 TO 50
+  READ alien(i,1),alien(i,2),alien(i,3)
+  alien(i,5)=300
+NEXT i
+RETURN
+
+setupdata:
+
+RESTORE mandata
+FOR x=1 TO 15
+  FOR y=1 TO 16
+    READ p:PSET (y,x),p
+  NEXT y
+NEXT x
+GET (0,0)-(16,16),man%(0,0)
+RESTORE mandata2
+FOR x=1 TO 15
+  FOR y=1 TO 16
+    READ p:PSET (y,x),p
+  NEXT y
+NEXT x
+GET (0,0)-(16,16),man%(0,1)
+RETURN
+
+
+
+aliencoor:
+DATA 100,20,1
+DATA 120,20,1
+DATA 140,20,1
+DATA 160,20,1
+DATA 180,20,1
+DATA 200,20,1
+DATA 220,20,1
+DATA 240,20,1
+DATA 260,20,1
+DATA 280,20,1
+
+DATA 100,40,1
+DATA 120,40,1
+DATA 140,40,1
+DATA 160,40,1
+DATA 180,40,1
+DATA 200,40,1
+DATA 220,40,1
+DATA 240,40,1
+DATA 260,40,1
+DATA 280,40,1
+
+DATA 100,60,1
+DATA 120,60,1
+DATA 140,60,1
+DATA 160,60,1
+DATA 180,60,1
+DATA 200,60,1
+DATA 220,60,1
+DATA 240,60,1
+DATA 260,60,1
+DATA 280,60,1
+
+DATA 100,80,1
+DATA 120,80,1
+DATA 140,80,1
+DATA 160,80,1
+DATA 180,80,1
+DATA 200,80,1
+DATA 220,80,1
+DATA 240,80,1
+DATA 260,80,1
+DATA 280,80,1
+
+DATA 100,100,1
+DATA 120,100,1
+DATA 140,100,1
+DATA 160,100,1
+DATA 180,100,1
+DATA 200,100,1
+DATA 220,100,1
+DATA 240,100,1
+DATA 260,100,1
+DATA 280,100,1
+
+mandata:
+DATA 0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+DATA 1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1
+DATA 0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0
+DATA 0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0
+DATA 0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0
+DATA 0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0
+DATA 0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0
+DATA 0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0
+DATA 0,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0
+DATA 0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0
+DATA 0,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0
+DATA 0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0
+DATA 1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1
+DATA 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+DATA 0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,0
+mandata2:
+DATA 1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1
+DATA 0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0
+DATA 0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,0
+DATA 0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0
+DATA 0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0
+DATA 0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0
+DATA 0,0,1,0,0,1,0,0,0,0,1,0,0,1,0,0
+DATA 0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0
+DATA 0,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0
+DATA 0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0
+DATA 0,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0
+DATA 0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0
+DATA 0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+DATA 1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1
+DATA 0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+
+
