@@ -1,0 +1,24 @@
+
+	STRUCTURE MYDEV,0
+
+	APTR	nd_succ		;00\	     \
+	APTR	nd_pred		;04 \	      \
+	UBYTE	nd_type		;08  | node    \
+	BYTE	nd_pri		;09 /		\
+	APTR	nd_Name		;0a/		 \
+
+	APTR	mn_replyport	;0e  \ message      \
+	UWORD	mn_length	;12  /		     \
+
+	APTR	io_device	;14			\
+	APTR	io_unit		;18			 \
+	UWORD	io_command	;1c			  \
+	UBYTE	io_flags	;1e			   \
+	BYTE	io_error	;1f			    | device
+	ULONG	io_actual	;20			   /
+	ULONG	io_length	;24			  /
+	APTR	io_data		;28			 /
+	ULONG	io_offset	;2c			/
+	LABLE	io_mydevsize
+
+

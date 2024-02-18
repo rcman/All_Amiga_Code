@@ -1,0 +1,41 @@
+
+
+                 Startup of Compac AT
+                 ____________________
+
+     To start the Compac AT, just turn on the PC.  If the PC was brought down
+for some reason before, then give the Compac PC AT at least 2 minutes to
+the AS/400 to recover from a PC shutdown.
+
+
+                File transfer to the 400
+                ________________________
+
+     The file from the PC will be transfered every minute to the AS/400.  The
+only way the PC cannot send to the 400 is 1) the 400 is down 2) communications
+droped 3) the 400 (SMSAT) session was not started 4) something wrong with PC.
+
+
+                   Protocol Overview
+                   _________________
+
+     This protocol is between the Compac AT and the IBM AT (Scale AT).
+The protocol is very unique, it is made up of three parts (start,data,check).
+For the start (HEX 02), this is sent at the beginning of every string of info.
+Next is the data, which can be any lenght, and any character above (HEX 20).
+The last part is a check or checksum followed by a charage return.  This check
+is calculated on the actual data it self (a detailed description of how to
+calculate the checksum can be obtained from Accusort).
+     When the Compac AT starts up it will send out ('107IAH126').  The other
+AT will send back an acknowledgement ('106ACK0EB').  Now both machines are
+ready for transmitting and recieveing.  If the IBM AT sends a bad record to
+the Compac AT, then the Compac will send a NAK back.  Then the IBM AT will
+re-transmit the record.
+
+
+
+
+
+
+
+

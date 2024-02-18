@@ -52,8 +52,10 @@ copper_ins:
             dc.w $0090,$ffc1         ;diwstop
 firsta:     dc.w $00e4,$0000    *    ;bit plane display area 2(low)
             dc.w $00e6,$0000    *    ;bit plane display area 2(high)
-            dc.w $00e0,$0000    *    ;                       1(low)
-            dc.w $00e2,$0000    *    ;                       1(high)
+            dc.w $00e0
+scrnl:	    dc.w $0000    *    ;                       1(low)
+            dc.w $00e2
+scrnh:	    dc.w $0000    *    ;                       1(high)
             dc.w $0092,$003c
             dc.w $0094,$00d4
             dc.w $0104,$0024

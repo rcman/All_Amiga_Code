@@ -1,0 +1,3150 @@
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+0000' 1         SECTION section
+      2
+      3         include "exec/types.i"
+           True                           1     IFND EXEC_TYPES_I
+          >0001                           2 EXEC_TYPES_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: types.i,v 1.0 85/08/28 15:15:00 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+     17 EXTERN_LIB  MACRO
+     18        XREF    _LVO\1
+     19        ENDM
+     20
+     21 STRUCTURE   MACRO
+     22 \1          SET     0         * for assembler's sake
+     23 SOFFSET     SET     \2
+     24             ENDM
+     25
+     26 BOOL       MACRO
+     27 \1       EQU       SOFFSET
+     28 SOFFSET       SET       SOFFSET+2
+     29        ENDM
+     30
+     31 BYTE        MACRO
+     32 \1          EQU     SOFFSET
+     33 SOFFSET     SET     SOFFSET+1
+     34             ENDM
+     35
+     36 UBYTE       MACRO
+     37 \1          EQU     SOFFSET
+     38 SOFFSET     SET     SOFFSET+1
+     39             ENDM
+     40
+     41 WORD        MACRO
+     42 \1          EQU     SOFFSET
+     43 SOFFSET     SET     SOFFSET+2
+     44             ENDM
+     45
+     46 UWORD       MACRO
+     47 \1          EQU     SOFFSET
+     48 SOFFSET     SET     SOFFSET+2
+     49             ENDM
+     50
+     51 SHORT        MACRO
+     52 \1          EQU     SOFFSET
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     53 SOFFSET     SET     SOFFSET+2
+     54             ENDM
+     55
+     56 USHORT      MACRO
+     57 \1          EQU     SOFFSET
+     58 SOFFSET     SET     SOFFSET+2
+     59             ENDM
+     60
+     61 LONG        MACRO
+     62 \1          EQU     SOFFSET
+     63 SOFFSET     SET     SOFFSET+4
+     64             ENDM
+     65
+     66 ULONG       MACRO
+     67 \1          EQU     SOFFSET
+     68 SOFFSET     SET     SOFFSET+4
+     69             ENDM
+     70
+     71 FLOAT       MACRO
+     72 \1          EQU     SOFFSET
+     73 SOFFSET     SET     SOFFSET+4
+     74             ENDM
+     75
+     76 APTR        MACRO
+     77 \1          EQU     SOFFSET
+     78 SOFFSET     SET     SOFFSET+4
+     79             ENDM
+     80
+     81 RPTR        MACRO
+     82 \1          EQU     SOFFSET
+     83 SOFFSET     SET     SOFFSET+2
+     84             ENDM
+     85
+     86 STRUCT      MACRO
+     87 \1          EQU     SOFFSET
+     88 SOFFSET     SET     SOFFSET+\2
+     89             ENDM
+     90
+     91 LABEL       MACRO
+     92 \1          EQU     SOFFSET
+     93             ENDM
+     94
+     95 *------ bit definition macro ------------------------------------
+     96 *
+     97 *   Given:
+     98 *
+     99 *       BITDEF  MEM,CLEAR,16
+    100 *
+    101 *  Yields:
+    102 *
+    103 *       MEMB_CLEAR  EQU 16
+    104 *       MEMF_CLEAR  EQU (1.SL.MEMB_CLEAR)
+    105 *
+    106
+    107 BITDEF      MACRO   * prefix,&name,&bitnum
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+    108             BITDEF0 \1,\2,B_,\3
+    109 \@BITDEF    SET     1<<\3
+    110             BITDEF0 \1,\2,F_,\@BITDEF
+    111             ENDM
+    112
+    113 BITDEF0     MACRO   * prefix,&name,&type,&value
+    114 \1\3\2      EQU     \4
+    115             ENDM
+    116
+    117     ENDC
+      4         include "exec/nodes.i"
+           True                           1     IFND EXEC_NODES_I
+          >0001                           2 EXEC_NODES_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: nodes.i,v 1.0 85/08/28 15:12:27 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+     17
+     18 *----------------------------------------------------------------
+     19 *
+     20 *   List Node Structure
+     21 *
+     22 *----------------------------------------------------------------
+     23
+     24  STRUCTURE  LN,0
+          >0000                          24+LN          SET     0         * for assembler's sake
+          >0000                          24+SOFFSET     SET     0
+     25     APTR    LN_SUCC
+          =0000                          25+LN_SUCC     EQU     SOFFSET
+          >0004                          25+SOFFSET     SET     SOFFSET+4
+     26     APTR    LN_PRED
+          =0004                          26+LN_PRED     EQU     SOFFSET
+          >0008                          26+SOFFSET     SET     SOFFSET+4
+     27     UBYTE   LN_TYPE
+          =0008                          27+LN_TYPE     EQU     SOFFSET
+          >0009                          27+SOFFSET     SET     SOFFSET+1
+     28     BYTE    LN_PRI
+          =0009                          28+LN_PRI      EQU     SOFFSET
+          >000A                          28+SOFFSET     SET     SOFFSET+1
+     29     APTR    LN_NAME
+          =000A                          29+LN_NAME     EQU     SOFFSET
+          >000E                          29+SOFFSET     SET     SOFFSET+4
+     30     LABEL   LN_SIZE
+          =000E                          30+LN_SIZE     EQU     SOFFSET
+     31
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     32
+     33 *------ Node Types:
+     34
+          =0000                          35 NT_UNKNOWN      EQU     0
+          =0001                          36 NT_TASK         EQU     1
+          =0002                          37 NT_INTERRUPT    EQU     2
+          =0003                          38 NT_DEVICE       EQU     3
+          =0004                          39 NT_MSGPORT      EQU     4
+          =0005                          40 NT_MESSAGE      EQU     5
+          =0006                          41 NT_FREEMSG      EQU     6
+          =0007                          42 NT_REPLYMSG     EQU     7
+          =0008                          43 NT_RESOURCE     EQU     8
+          =0009                          44 NT_LIBRARY      EQU     9
+          =000A                          45 NT_MEMORY       EQU     10
+          =000B                          46 NT_SOFTINT   EQU   11
+          =000C                          47 NT_FONT    EQU   12
+          =000D                          48 NT_PROCESS   EQU   13
+     49
+     50     ENDC
+      5         include "exec/lists.i"
+           True                           1     IFND EXEC_LISTS_I
+          >0001                           2 EXEC_LISTS_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: lists.i,v 1.0 85/08/28 15:11:36 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_NODES_I
+     18     INCLUDE "exec/nodes.i"
+     19     ENDC
+     20
+     21
+     22 *---------------------------------------------------------------------
+     23 *
+     24 *   List Structures
+     25 *
+     26 *---------------------------------------------------------------------
+     27
+     28  STRUCTURE  LH,0
+          >0000                          28+LH          SET     0         * for assembler's sake
+          >0000                          28+SOFFSET     SET     0
+     29     APTR    LH_HEAD
+          =0000                          29+LH_HEAD     EQU     SOFFSET
+          >0004                          29+SOFFSET     SET     SOFFSET+4
+     30     APTR    LH_TAIL
+          =0004                          30+LH_TAIL     EQU     SOFFSET
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          >0008                          30+SOFFSET     SET     SOFFSET+4
+     31     APTR    LH_TAILPRED
+          =0008                          31+LH_TAILPRED EQU     SOFFSET
+          >000C                          31+SOFFSET     SET     SOFFSET+4
+     32     UBYTE   LH_TYPE
+          =000C                          32+LH_TYPE     EQU     SOFFSET
+          >000D                          32+SOFFSET     SET     SOFFSET+1
+     33     UBYTE   LH_pad
+          =000D                          33+LH_pad      EQU     SOFFSET
+          >000E                          33+SOFFSET     SET     SOFFSET+1
+     34     LABEL   LH_SIZE
+          =000E                          34+LH_SIZE     EQU     SOFFSET
+     35
+     36
+     37 NEWLIST       MACRO   * list
+     38        MOVE.L  \1,(\1)
+     39        ADDQ.L  #LH_TAIL,(\1)
+     40        CLR.L   LH_TAIL(\1)
+     41        MOVE.L  \1,(LH_TAIL+LN_PRED)(\1)
+     42        ENDM
+     43
+     44 TSTLIST       MACRO   * [list]
+     45        IFC       '\1',''
+     46        CMP.L   LH_TAIL+LN_PRED(A0),A0
+     47        ENDC
+     48        IFNC    '\1',''
+     49        CMP.L   LH_TAIL+LN_PRED(\1),\1
+     50        ENDC
+     51        ENDM
+     52
+     53 SUCC       MACRO   * node,succ
+     54        MOVE.L  (\1),\2
+     55        ENDM
+     56
+     57 PRED       MACRO   * node,pred
+     58        MOVE.L  LN_PRED(\1),\2
+     59        ENDM
+     60
+     61 IFEMPTY       MACRO   * list,label
+     62        CMP.L   LH_TAIL+LN_PRED(\1),\1
+     63        BEQ     \2
+     64        ENDM
+     65
+     66 IFNOTEMPTY  MACRO   * list,label
+     67        CMP.L   LH_TAIL+LN_PRED(\1),\1
+     68        BNE     \2
+     69        ENDM
+     70
+     71 TSTNODE     MACRO   * node,next
+     72        MOVE.L  (\1),\2
+     73        TST.L   (\2)
+     74        ENDM
+     75
+     76 NEXTNODE    MACRO   * current,next,exit_label (AX,DX,DISP16)
+     77        MOVE.L  \1,\2
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     78        MOVE.L  (\2),\1
+     79        BEQ     \3
+     80        ENDM
+     81
+     82 ADDHEAD       MACRO
+     83        MOVE.L  (A0),D0
+     84        MOVE.L  A1,(A0)
+     85        MOVEM.L D0/A0,(A1)
+     86        MOVE.L  D0,A0
+     87        MOVE.L  A1,LN_PRED(A0)
+     88        ENDM
+     89
+     90 ADDTAIL       MACRO
+     91        LEA       LH_TAIL(A0),A0
+     92        MOVE.L  LN_PRED(A0),D0
+     93        MOVE.L  A1,LN_PRED(A0)
+     94        MOVE.L  A0,(A1)
+     95        MOVE.L  D0,LN_PRED(A1)
+     96        MOVE.L  D0,A0
+     97        MOVE.L  A1,(A0)
+     98        ENDM
+     99
+    100 REMOVE       MACRO
+    101        MOVE.L  (A1),A0
+    102        MOVE.L  LN_PRED(A1),A1
+    103        MOVE.L  A0,(A1)
+    104        MOVE.L  A1,LN_PRED(A0)
+    105        ENDM
+    106
+    107 REMHEAD       MACRO
+    108        MOVE.L  (A0),A1
+    109        MOVE.L  (A1),D0
+    110        BEQ.S   REMHEAD\@
+    111        MOVE.L  D0,(A0)
+    112        EXG.L   D0,A1
+    113        MOVE.L  A0,LN_PRED(A1)
+    114 REMHEAD\@
+    115        ENDM
+    116
+    117 *----------------------------------------------------------------
+    118 *
+    119 *  REMHEADQ -- remove-head quickly
+    120 *
+    121 *   Useful when a scratch register is available, and
+    122 *   list is known to contain at least one node.
+    123 *
+    124 *----------------------------------------------------------------
+    125
+    126 REMHEADQ    MACRO   * head,node,scratchReg
+    127        MOVE.L  (\1),\2
+    128        MOVE.L  (\2),\3
+    129        MOVE.L  \3,(\1)
+    130        MOVE.L  \1,LN_PRED(\3)
+    131        ENDM
+    132
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+    133 REMTAIL       MACRO
+    134        MOVE.L  LH_TAIL+LN_PRED(A0),A1
+    135        MOVE.L  LN_PRED(A1),D0
+    136        BEQ.S   REMTAIL\@
+    137        MOVE.L  D0,LH_TAIL+LN_PRED(A0)
+    138        EXG.L   D0,A1
+    139        MOVE.L  A0,(A1)
+    140        ADDQ.L  #4,(A1)
+    141 REMTAIL\@
+    142        ENDM
+    143
+    144     ENDC
+      6         include "exec/libraries.i"
+           True                           1     IFND EXEC_LIBRARIES_I
+          >0001                           2 EXEC_LIBRARIES_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: libraries.i,v 1.0 85/08/28 15:11:09 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_NODES_I
+     18     INCLUDE "exec/nodes.i"
+     19     ENDC
+     20
+     21
+     22 *------ Special Constants ---------------------------------------
+     23
+          =0006                          24 LIB_VECTSIZE   EQU   6
+          =0004                          25 LIB_RESERVED   EQU   4
+          =FFFFFFFA                      26 LIB_BASE       EQU   $FFFFFFFA   * (-LIB_VECTSIZE)
+          =FFFFFFE2                      27 LIB_USERDEF    EQU   LIB_BASE-(LIB_RESERVED*LIB_VECTSIZE)
+          =FFFFFFE2                      28 LIB_NONSTD   EQU   LIB_USERDEF
+     29
+     30 *----------------------------------------------------------------
+     31 *
+     32 *   Library Definition Macros
+     33 *
+     34 *----------------------------------------------------------------
+     35
+     36 *------ LIBINIT sets base offset for library function definitions:
+     37
+     38 LIBINIT       MACRO   * [baseOffset]
+     39             IFC       '\1',''
+     40 COUNT_LIB   SET     LIB_USERDEF
+     41             ENDC
+     42        IFNC    '\1',''
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     43 COUNT_LIB   SET       \1
+     44             ENDC
+     45             ENDM
+     46
+     47
+     48 *------ LIBDEF is used to define each library function entry:
+     49
+     50 LIBDEF      MACRO   * libraryFunctionSymbol
+     51 \1          EQU     COUNT_LIB
+     52 COUNT_LIB   SET     COUNT_LIB-LIB_VECTSIZE
+     53             ENDM
+     54
+     55
+     56 *----------------------------------------------------------------
+     57 *
+     58 *   Standard Library Functions
+     59 *
+     60 *----------------------------------------------------------------
+     61
+     62     LIBINIT LIB_BASE
+           False                         62+            IFC       'LIB_BASE',''
+     62+COUNT_LIB   SET     LIB_USERDEF
+     62+            ENDC
+           True                          62+       IFNC    'LIB_BASE',''
+          >FFFFFFFA                      62+COUNT_LIB   SET       LIB_BASE
+     62+            ENDC
+     63
+     64     LIBDEF  LIB_OPEN
+          =FFFFFFFA                      64+LIB_OPEN    EQU     COUNT_LIB
+          >FFFFFFF4                      64+COUNT_LIB   SET     COUNT_LIB-LIB_VECTSIZE
+     65     LIBDEF  LIB_CLOSE
+          =FFFFFFF4                      65+LIB_CLOSE   EQU     COUNT_LIB
+          >FFFFFFEE                      65+COUNT_LIB   SET     COUNT_LIB-LIB_VECTSIZE
+     66     LIBDEF  LIB_EXPUNGE
+          =FFFFFFEE                      66+LIB_EXPUNGE EQU     COUNT_LIB
+          >FFFFFFE8                      66+COUNT_LIB   SET     COUNT_LIB-LIB_VECTSIZE
+     67     LIBDEF  LIB_EXTFUNC         * reserved *
+          =FFFFFFE8                      67+LIB_EXTFUNC EQU     COUNT_LIB
+          >FFFFFFE2                      67+COUNT_LIB   SET     COUNT_LIB-LIB_VECTSIZE
+     68
+     69
+     70 *----------------------------------------------------------------
+     71 *
+     72 *   Standard Library Data Structure
+     73 *
+     74 *----------------------------------------------------------------
+     75
+     76  STRUCTURE LIB,LN_SIZE
+          >0000                          76+LIB         SET     0         * for assembler's sake
+          >000E                          76+SOFFSET     SET     LN_SIZE
+     77     UBYTE   LIB_FLAGS
+          =000E                          77+LIB_FLAGS   EQU     SOFFSET
+          >000F                          77+SOFFSET     SET     SOFFSET+1
+     78     UBYTE   LIB_pad
+          =000F                          78+LIB_pad     EQU     SOFFSET
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          >0010                          78+SOFFSET     SET     SOFFSET+1
+     79     UWORD   LIB_NEGSIZE                 * number of bytes before LIB
+          =0010                          79+LIB_NEGSIZE EQU     SOFFSET
+          >0012                          79+SOFFSET     SET     SOFFSET+2
+     80     UWORD   LIB_POSSIZE                 * number of bytes after LIB
+          =0012                          80+LIB_POSSIZE EQU     SOFFSET
+          >0014                          80+SOFFSET     SET     SOFFSET+2
+     81     UWORD   LIB_VERSION                 * major
+          =0014                          81+LIB_VERSION EQU     SOFFSET
+          >0016                          81+SOFFSET     SET     SOFFSET+2
+     82     UWORD   LIB_REVISION                * minor
+          =0016                          82+LIB_REVISION EQU    SOFFSET
+          >0018                          82+SOFFSET     SET     SOFFSET+2
+     83     APTR    LIB_IDSTRING      * identification
+          =0018                          83+LIB_IDSTRING EQU    SOFFSET
+          >001C                          83+SOFFSET     SET     SOFFSET+4
+     84     ULONG   LIB_SUM                     * the checksum itself
+          =001C                          84+LIB_SUM     EQU     SOFFSET
+          >0020                          84+SOFFSET     SET     SOFFSET+4
+     85     UWORD   LIB_OPENCNT                 * number of current opens
+          =0020                          85+LIB_OPENCNT EQU     SOFFSET
+          >0022                          85+SOFFSET     SET     SOFFSET+2
+     86     LABEL   LIB_SIZE
+          =0022                          86+LIB_SIZE    EQU     SOFFSET
+     87
+     88
+     89 *------ LIB_FLAGS bit definitions:
+     90
+     91     BITDEF  LIB,SUMMING,0               * we are currently checksumming
+     91+            BITDEF0 LIB,SUMMING,B_,0
+          =0000                          91+LIBB_SUMMING EQU    0
+          >0001                          91+.001BITDEF  SET     1<<0
+     91+            BITDEF0 LIB,SUMMING,F_,.001BITDEF
+          =0001                          91+LIBF_SUMMING EQU    .001BITDEF
+     92     BITDEF  LIB,CHANGED,1               * we have just changed the lib
+     92+            BITDEF0 LIB,CHANGED,B_,1
+          =0001                          92+LIBB_CHANGED EQU    1
+          >0002                          92+.002BITDEF  SET     1<<1
+     92+            BITDEF0 LIB,CHANGED,F_,.002BITDEF
+          =0002                          92+LIBF_CHANGED EQU    .002BITDEF
+     93     BITDEF  LIB,SUMUSED,2               * set if we should bother to sum
+     93+            BITDEF0 LIB,SUMUSED,B_,2
+          =0002                          93+LIBB_SUMUSED EQU    2
+          >0004                          93+.003BITDEF  SET     1<<2
+     93+            BITDEF0 LIB,SUMUSED,F_,.003BITDEF
+          =0004                          93+LIBF_SUMUSED EQU    .003BITDEF
+     94     BITDEF  LIB,DELEXP,3                * delayed expunge
+     94+            BITDEF0 LIB,DELEXP,B_,3
+          =0003                          94+LIBB_DELEXP EQU     3
+          >0008                          94+.004BITDEF  SET     1<<3
+     94+            BITDEF0 LIB,DELEXP,F_,.004BITDEF
+          =0008                          94+LIBF_DELEXP EQU     .004BITDEF
+     95
+     96
+     97 *----------------------------------------------------------------
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     98 *
+     99 *   Function Invocation Macros
+    100 *
+    101 *----------------------------------------------------------------
+    102
+    103 *------ CALLLIB for calling functions where A6 is already correct:
+    104
+    105 CALLLIB     MACRO   * functionOffset
+    106    IFGT NARG-1
+    107        FAIL    !!! CALLLIB MACRO - too many arguments !!!
+    108    ENDC
+    109             JSR     \1(A6)
+    110             ENDM
+    111
+    112
+    113 *------ LINKLIB for calling functions where A6 is incorrect:
+    114
+    115 LINKLIB     MACRO   * functionOffset,libraryBase
+    116    IFGT NARG-2
+    117        FAIL    !!! LINKLIB MACRO - too many arguments !!!
+    118    ENDC
+    119             MOVE.L  A6,-(SP)
+    120             MOVE.L  \2,A6
+    121             CALLLIB \1
+    122             MOVE.L  (SP)+,A6
+    123             ENDM
+    124
+    125     ENDC
+      7         include "exec/devices.i"
+           True                           1     IFND EXEC_DEVICES_I
+          >0001                           2 EXEC_DEVICES_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: devices.i,v 1.0 85/08/28 15:07:02 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_LIBRARIES_I
+     18     INCLUDE "exec/libraries.i"
+     19     ENDC
+     20
+           True                          21     IFND EXEC_PORTS_I
+     22     INCLUDE "exec/ports.i"
+           True                           1     IFND EXEC_PORTS_I
+          >0001                           2 EXEC_PORTS_I SET 1
+      3 **********************************************************************
+      4 *
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: ports.i,v 1.0 85/08/28 15:12:52 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_NODES_I
+     18     INCLUDE "exec/nodes.i"
+     19     ENDC
+     20
+           False                         21     IFND EXEC_LISTS_I
+     22     INCLUDE "exec/lists.i"
+     23     ENDC
+     24
+     25
+     26 *----------------------------------------------------------------
+     27 *
+     28 *   Message Port Structure
+     29 *
+     30 *----------------------------------------------------------------
+     31
+     32  STRUCTURE  MP,LN_SIZE
+          >0000                          32+MP          SET     0         * for assembler's sake
+          >000E                          32+SOFFSET     SET     LN_SIZE
+     33     UBYTE   MP_FLAGS
+          =000E                          33+MP_FLAGS    EQU     SOFFSET
+          >000F                          33+SOFFSET     SET     SOFFSET+1
+     34     UBYTE   MP_SIGBIT               * signal bit number
+          =000F                          34+MP_SIGBIT   EQU     SOFFSET
+          >0010                          34+SOFFSET     SET     SOFFSET+1
+     35     APTR    MP_SIGTASK              * task to be signalled
+          =0010                          35+MP_SIGTASK  EQU     SOFFSET
+          >0014                          35+SOFFSET     SET     SOFFSET+4
+     36     STRUCT  MP_MSGLIST,LH_SIZE      * message linked list
+          =0014                          36+MP_MSGLIST  EQU     SOFFSET
+          >0022                          36+SOFFSET     SET     SOFFSET+LH_SIZE
+     37     LABEL   MP_SIZE
+          =0022                          37+MP_SIZE     EQU     SOFFSET
+     38
+     39
+     40 *------ unions:
+     41
+          =0010                          42 MP_SOFTINT      EQU  MP_SIGTASK
+     43
+     44
+     45 *------ flags fields:
+     46
+          =0003                          47 PF_ACTION       EQU  3
+     48
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     49
+     50 *------ PutMsg actions:
+     51
+          =0000                          52 PA_SIGNAL   EQU  0
+          =0001                          53 PA_SOFTINT      EQU  1
+          =0002                          54 PA_IGNORE       EQU  2
+     55
+     56
+     57 *----------------------------------------------------------------
+     58 *
+     59 *   Message Structure
+     60 *
+     61 *----------------------------------------------------------------
+     62
+     63  STRUCTURE  MN,LN_SIZE
+          >0000                          63+MN          SET     0         * for assembler's sake
+          >000E                          63+SOFFSET     SET     LN_SIZE
+     64     APTR    MN_REPLYPORT            * message reply port
+          =000E                          64+MN_REPLYPORT EQU    SOFFSET
+          >0012                          64+SOFFSET     SET     SOFFSET+4
+     65     UWORD   MN_LENGTH               * message len in bytes
+          =0012                          65+MN_LENGTH   EQU     SOFFSET
+          >0014                          65+SOFFSET     SET     SOFFSET+2
+     66     LABEL   MN_SIZE
+          =0014                          66+MN_SIZE     EQU     SOFFSET
+     67
+     68     ENDC
+     23     ENDC
+     24
+     25
+     26 *----------------------------------------------------------------
+     27 *
+     28 *   Device Data Structure
+     29 *
+     30 *----------------------------------------------------------------
+     31
+     32  STRUCTURE  DD,LIB_SIZE
+          >0000                          32+DD          SET     0         * for assembler's sake
+          >0022                          32+SOFFSET     SET     LIB_SIZE
+     33     LABEL   DD_SIZE          * identical to library
+          =0022                          33+DD_SIZE     EQU     SOFFSET
+     34
+     35
+     36 *----------------------------------------------------------------
+     37 *
+     38 *   Suggested Unit Structure
+     39 *
+     40 *----------------------------------------------------------------
+     41
+     42  STRUCTURE  UNIT,MP_SIZE      * queue for requests
+          >0000                          42+UNIT        SET     0         * for assembler's sake
+          >0022                          42+SOFFSET     SET     MP_SIZE
+     43     UBYTE   UNIT_FLAGS
+          =0022                          43+UNIT_FLAGS  EQU     SOFFSET
+          >0023                          43+SOFFSET     SET     SOFFSET+1
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     44     UBYTE   UNIT_pad
+          =0023                          44+UNIT_pad    EQU     SOFFSET
+          >0024                          44+SOFFSET     SET     SOFFSET+1
+     45     UWORD   UNIT_OPENCNT
+          =0024                          45+UNIT_OPENCNT EQU    SOFFSET
+          >0026                          45+SOFFSET     SET     SOFFSET+2
+     46     LABEL   UNIT_SIZE
+          =0026                          46+UNIT_SIZE   EQU     SOFFSET
+     47
+     48
+     49 *------ UNIT_FLAG definitions:
+     50
+     51     BITDEF  UNIT,ACTIVE,0      * driver is active
+     51+            BITDEF0 UNIT,ACTIVE,B_,0
+          =0000                          51+UNITB_ACTIVE EQU    0
+          >0001                          51+.005BITDEF  SET     1<<0
+     51+            BITDEF0 UNIT,ACTIVE,F_,.005BITDEF
+          =0001                          51+UNITF_ACTIVE EQU    .005BITDEF
+     52     BITDEF  UNIT,INTASK,1      * running in driver's task
+     52+            BITDEF0 UNIT,INTASK,B_,1
+          =0001                          52+UNITB_INTASK EQU    1
+          >0002                          52+.006BITDEF  SET     1<<1
+     52+            BITDEF0 UNIT,INTASK,F_,.006BITDEF
+          =0002                          52+UNITF_INTASK EQU    .006BITDEF
+     53
+     54     ENDC
+      8         include "exec/io.i"
+           True                           1     IFND EXEC_IO_I
+          >0001                           2 EXEC_IO_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: io.i,v 1.0 85/08/28 15:10:43 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_PORTS_I
+     18     INCLUDE "exec/ports.i"
+     19     ENDC
+     20
+           False                         21     IFND EXEC_LIBRARIES_I
+     22     INCLUDE "exec/libraries.i"
+     23     ENDC
+     24
+     25
+     26 *----------------------------------------------------------------
+     27 *
+     28 *   IO Request Structures
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     29 *
+     30 *----------------------------------------------------------------
+     31
+     32 *------ Required portion of IO request:
+     33
+     34  STRUCTURE  IO,MN_SIZE
+          >0000                          34+IO          SET     0         * for assembler's sake
+          >0014                          34+SOFFSET     SET     MN_SIZE
+     35     APTR    IO_DEVICE         * device node pointer
+          =0014                          35+IO_DEVICE   EQU     SOFFSET
+          >0018                          35+SOFFSET     SET     SOFFSET+4
+     36     APTR    IO_UNIT          * unit (driver private)
+          =0018                          36+IO_UNIT     EQU     SOFFSET
+          >001C                          36+SOFFSET     SET     SOFFSET+4
+     37     UWORD   IO_COMMAND         * device command
+          =001C                          37+IO_COMMAND  EQU     SOFFSET
+          >001E                          37+SOFFSET     SET     SOFFSET+2
+     38     UBYTE   IO_FLAGS         * special flags
+          =001E                          38+IO_FLAGS    EQU     SOFFSET
+          >001F                          38+SOFFSET     SET     SOFFSET+1
+     39     BYTE    IO_ERROR         * error or warning code
+          =001F                          39+IO_ERROR    EQU     SOFFSET
+          >0020                          39+SOFFSET     SET     SOFFSET+1
+     40     LABEL   IO_SIZE
+          =0020                          40+IO_SIZE     EQU     SOFFSET
+     41
+     42
+     43 *------ Standard IO request extension:
+     44
+     45     ULONG   IO_ACTUAL         * actual # of bytes transfered
+          =0020                          45+IO_ACTUAL   EQU     SOFFSET
+          >0024                          45+SOFFSET     SET     SOFFSET+4
+     46     ULONG   IO_LENGTH         * requested # of bytes transfered
+          =0024                          46+IO_LENGTH   EQU     SOFFSET
+          >0028                          46+SOFFSET     SET     SOFFSET+4
+     47     APTR    IO_DATA          * pointer to data area
+          =0028                          47+IO_DATA     EQU     SOFFSET
+          >002C                          47+SOFFSET     SET     SOFFSET+4
+     48     ULONG   IO_OFFSET         * offset for seeking devices
+          =002C                          48+IO_OFFSET   EQU     SOFFSET
+          >0030                          48+SOFFSET     SET     SOFFSET+4
+     49 *   ULONG   IO_RESERVED1
+     50 *   ULONG   IO_RESERVED2
+     51     LABEL   IOSTD_SIZE
+          =0030                          51+IOSTD_SIZE  EQU     SOFFSET
+     52
+     53
+     54 *------ IO_FLAGS bit definitions:
+     55
+     56     BITDEF  IO,QUICK,0         * complete IO quickly
+     56+            BITDEF0 IO,QUICK,B_,0
+          =0000                          56+IOB_QUICK   EQU     0
+          >0001                          56+.007BITDEF  SET     1<<0
+     56+            BITDEF0 IO,QUICK,F_,.007BITDEF
+          =0001                          56+IOF_QUICK   EQU     .007BITDEF
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     57
+     58
+     59 *----------------------------------------------------------------
+     60 *
+     61 *   Standard Device Library Functions
+     62 *
+     63 *----------------------------------------------------------------
+     64
+     65        LIBINIT
+           True                          65+            IFC       '',''
+          >FFFFFFE2                      65+COUNT_LIB   SET     LIB_USERDEF
+     65+            ENDC
+           False                         65+       IFNC    '',''
+     65+COUNT_LIB   SET
+     65+            ENDC
+     66
+     67        LIBDEF  DEV_BEGINIO      * process IO request
+          =FFFFFFE2                      67+DEV_BEGINIO EQU     COUNT_LIB
+          >FFFFFFDC                      67+COUNT_LIB   SET     COUNT_LIB-LIB_VECTSIZE
+     68        LIBDEF  DEV_ABORTIO      * abort IO request
+          =FFFFFFDC                      68+DEV_ABORTIO EQU     COUNT_LIB
+          >FFFFFFD6                      68+COUNT_LIB   SET     COUNT_LIB-LIB_VECTSIZE
+     69
+     70
+     71 *----------------------------------------------------------------
+     72 *
+     73 *   IO Function Macros
+     74 *
+     75 *----------------------------------------------------------------
+     76
+     77 BEGINIO       MACRO
+     78        LINKLIB DEV_BEGINIO,IO_DEVICE(A1)
+     79        ENDM
+     80
+     81 ABORTIO       MACRO
+     82        LINKLIB DEV_ABORTIO,IO_DEVICE(A1)
+     83        ENDM
+     84
+     85
+     86 *----------------------------------------------------------------
+     87 *
+     88 *   Standard Device Command Definitions
+     89 *
+     90 *----------------------------------------------------------------
+     91
+     92 *------ Command definition macro:
+     93 DEVINIT       MACRO   * [baseOffset]
+     94             IFC       '\1',''
+     95 CMD_COUNT   SET     CMD_NONSTD
+     96             ENDC
+     97        IFNC    '\1',''
+     98 CMD_COUNT   SET       \1
+     99             ENDC
+    100             ENDM
+    101
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+    102 DEVCMD       MACRO   * cmdname
+    103 \1       EQU       CMD_COUNT
+    104 CMD_COUNT   SET       CMD_COUNT+1
+    105        ENDM
+    106
+    107
+    108 *------ Standard device commands:
+    109
+    110        DEVINIT 0
++            IFC       '0',''
+    110+CMD_COUNT   SET     CMD_NONSTD
+    110+            ENDC
+    110+       IFNC    '0',''
+    110+CMD_COUNT   SET       0
+    110+            ENDC
+    111
+    112        DEVCMD  CMD_INVALID      * invalid command
+   =0000                         112+CMD_INVALID EQU    CMD_COUNT
+          >0001                         112+CMD_COUNT   SET       CMD_COUNT+1
+    113        DEVCMD  CMD_RESET      * reset as if just inited
+          =0001                         113+CMD_RESET EQU      CMD_COUNT
+          >0002                         113+CMD_COUNT   SET       CMD_COUNT+1
+    114        DEVCMD  CMD_READ      * standard read
+          =0002                         114+CMD_READ EQU       CMD_COUNT
+          >0003                         114+CMD_COUNT   SET       CMD_COUNT+1
+    115        DEVCMD  CMD_WRITE      * standard write
+          =0003                         115+CMD_WRITE EQU      CMD_COUNT
+          >0004                         115+CMD_COUNT   SET       CMD_COUNT+1
+    116        DEVCMD  CMD_UPDATE      * write out all buffers
+          =0004                         116+CMD_UPDATE EQU     CMD_COUNT
+          >0005                         116+CMD_COUNT   SET       CMD_COUNT+1
+    117        DEVCMD  CMD_CLEAR      * clear all buffers
+          =0005                         117+CMD_CLEAR EQU      CMD_COUNT
+          >0006                         117+CMD_COUNT   SET       CMD_COUNT+1
+    118        DEVCMD  CMD_STOP      * hold current and queued
+          =0006                         118+CMD_STOP EQU       CMD_COUNT
+          >0007                         118+CMD_COUNT   SET       CMD_COUNT+1
+    119        DEVCMD  CMD_START      * restart after stop
+          =0007                         119+CMD_START EQU      CMD_COUNT
+          >0008                         119+CMD_COUNT   SET       CMD_COUNT+1
+    120        DEVCMD  CMD_FLUSH      * abort entire queue
+          =0008                         120+CMD_FLUSH EQU      CMD_COUNT
+          >0009                         120+CMD_COUNT   SET       CMD_COUNT+1
+    121
+    122
+    123 *------ First non-standard device command value:
+    124
+    125        DEVCMD  CMD_NONSTD
+          =0009                         125+CMD_NONSTD EQU     CMD_COUNT
+          >000A                         125+CMD_COUNT   SET       CMD_COUNT+1
+    126
+    127     ENDC
+      9         include "exec/alerts.i"
+           True                           1     IFND EXEC_ALERTS_I
+          >0001                           2 EXEC_ALERTS_I SET 1
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: alerts.i,v 1.0 85/08/28 15:05:58 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+     17     BITDEF  S,ALERTWACK,1   * in ExecBase.SysFlags
+     17+            BITDEF0 S,ALERTWACK,B_,1
+          =0001                          17+SB_ALERTWACK EQU    1
+          >0002                          17+.008BITDEF  SET     1<<1
+     17+            BITDEF0 S,ALERTWACK,F_,.008BITDEF
+          =0002                          17+SF_ALERTWACK EQU    .008BITDEF
+     18
+     19
+     20 **********************************************************************
+     21 *
+     22 *  Format of the alert error number:
+     23 *
+     24 *    +---------------+----------------+--------------------------------+
+     25 *    |D|  SubSysId   |  General Error |    SubSystem Specific Error    |
+     26 *    +---------------+----------------+--------------------------------+
+     27 *
+     28 *           D:  DeadEnd alert
+     29 *         SubSysId:  indicates ROM subsystem number.
+     30 *    General Error:  roughly indicates what the error was
+     31 *   Specific Error:  indicates more detail
+     32 ***********************************************************************
+     33
+     34 *
+     35 *  Use this macro for causing an alert.  THIS MACRO MAY CHANGE!
+     36 *  It is very sensitive to memory corruption.... like stepping on
+     37 *  location 4!  But it should work for now.
+     38 *
+     39 ALERT      macro   (alertNumber, paramArray, scratch)
+     40       movem.l d7/a5/a6,-(sp)
+     41       move.l   #\1,d7
+     42       IFNC   '\2',''
+     43       lea   \2,a5
+     44       ENDC
+     45       move.l  4,a6      ; (use proper name!!!)
+     46       jsr   _LVOAlert(a6)
+     47       movem.l   (sp)+,d7/a5/a6
+     48       endm
+     49
+     50
+     51 **********************************************************************
+     52 *
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     53 *  General Dead-End Alerts
+     54 *
+     55 *  For example:  timer.device cannot open math.library:
+     56 *
+     57 *       ALERT  (AN_TimerDev!AG_OpenLib!AO_MathLib),(A0),A1
+     58 *
+     59 **********************************************************************
+     60
+     61 ;------ alert types
+          =80000000                      62 AT_DeadEnd   equ $80000000
+          =0000                          63 AT_Recovery   equ $00000000
+     64
+     65 ;------ general purpose alert codes
+          =00010000                      66 AG_NoMemory   equ $00010000
+          =00020000                      67 AG_MakeLib   equ $00020000
+          =00030000                      68 AG_OpenLib   equ $00030000
+          =00040000                      69 AG_OpenDev   equ $00040000
+          =00050000                      70 AG_OpenRes   equ $00050000
+          =00060000                      71 AG_IOError   equ $00060000
+     72
+     73 ;------ alert objects:
+          =8001                          74 AO_ExecLib   equ $00008001
+          =8002                          75 AO_GraphicsLib   equ $00008002
+          =8003                          76 AO_LayersLib   equ $00008003
+          =8004                          77 AO_Intuition   equ $00008004
+          =8005                          78 AO_MathLib   equ $00008005
+          =8006                          79 AO_CListLib   equ $00008006
+          =8007                          80 AO_DOSLib   equ $00008007
+          =8008                          81 AO_RAMLib   equ $00008008
+          =8009                          82 AO_IconLib   equ $00008009
+          =8010                          83 AO_AudioDev   equ $00008010
+          =8011                          84 AO_ConsoleDev   equ $00008011
+          =8012                          85 AO_GamePortDev   equ $00008012
+          =8013                          86 AO_KeyboardDev   equ $00008013
+          =8014                          87 AO_TrackDiskDev equ $00008014
+          =8015                          88 AO_TimerDev   equ $00008015
+          =8020                          89 AO_CIARsrc   equ $00008020
+          =8021                          90 AO_DiskRsrc    equ $00008021
+          =8022                          91 AO_MiscRsrc   equ $00008022
+          =8030                          92 AO_BootStrap    equ $00008030
+          =8031                          93 AO_Workbench    equ $00008031
+     94
+     95
+     96 **********************************************************************
+     97 *
+     98 *   Specific Dead-End Alerts:
+     99 *
+    100 *   For example:   exec.library -- corrupted memory list
+    101 *
+    102 *       ALERT  AN_MemCorrupt,(A0),A1
+    103 *
+    104 **********************************************************************
+    105
+    106 ;------ exec.library
+          =01000000                     107 AN_ExecLib   equ $01000000
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          =81000001                     108 AN_ExcptVect   equ $81000001   ; 68000 exception vector checksum
+          =81000002                     109 AN_BaseChkSum   equ $81000002   ; execbase checksum
+          =81000003                     110 AN_LibChkSum   equ $81000003   ; library checksum failure
+          =81000004                     111 AN_LibMem   equ $81000004   ; no memory to make library
+          =81000005                     112 AN_MemCorrupt   equ $81000005   ; corrupted memory list
+          =81000006                     113 AN_IntrMem   equ $81000006   ; no memory for interrupt servers
+    114
+    115 ;------ graphics.library
+          =02000000                     116 AN_GraphicsLib   equ $02000000
+          =82010001                     117 AN_CopDisplay   equ $82010001   ; copper display list, no memory
+          =82010002                     118 AN_CopInstr   equ $82010002   ; copper instruction list, no memory
+          =82000003                     119 AN_CopListOver   equ $82000003   ; copper list overload
+          =82000004                     120 AN_CopIListOver equ $82000004   ; copper intermediate list overload
+          =82010005                     121 AN_CopListHead   equ $82010005   ; copper list head, no memory
+          =82010006                     122 AN_LongFrame   equ $82010006   ; long frame, no memory
+          =82010007                     123 AN_ShortFrame   equ $82010007   ; short frame, no memory
+          =82010008                     124 AN_FloodFill   equ $82010008   ; flood fill, no memory
+          =02010009                     125 AN_TextTmpRas   equ $02010009   ; text, no memory for TmpRas
+          =8201000A                     126 AN_BltBitMap   equ $8201000A   ; BltBitMap, no memory
+    127
+    128 ;------ layers.library
+          =03000000                     129 AN_LayersLib   equ $03000000
+    130
+    131 ;------ intuition.library
+          =04000000                     132 AN_Intuition   equ $04000000
+          =84000001                     133 AN_GadgetType   equ $84000001   ; unknown gadet type
+          =04000001                     134 AN_BadGadget   equ $04000001   ; Recovery form of AN_GadgetType
+          =84010002                     135 AN_CreatePort   equ $84010002   ; create port, no memory
+          =84010003                     136 AN_ItemAlloc   equ $84010003   ; item plane alloc, no memory
+          =84010004                     137 AN_SubAlloc   equ $84010004   ; sub alloc, no memory
+          =84010005                     138 AN_PlaneAlloc   equ $84010005   ; plane alloc, no memory
+          =84000006                     139 AN_ItemBoxTop   equ $84000006   ; item box top < RelZero
+          =84010007                     140 AN_OpenScreen   equ $84010007   ; open screen, no memory
+          =84010008                     141 AN_OpenScrnRast   equ $84010008   ; open screen, raster alloc, no memory
+          =84000009                     142 AN_SysScrnType   equ $84000009   ; open sys screen, unknown type
+          =8401000A                     143 AN_AddSWGadget   equ $8401000A   ; add SW gadgets, no memory
+          =8401000B                     144 AN_OpenWindow   equ $8401000B   ; open window, no memory
+          =8400000C                     145 AN_BadState   equ $8400000C   ; Bad State Return entering Intuition
+          =8400000D                     146 AN_BadMessage   equ $8400000D   ; Bad Message received by IDCMP
+          =8400000E                     147 AN_WeirdEcho   equ $8400000E   ; Weird echo causing incomprehension
+          =8400000F                     148 AN_NoConsole   equ $8400000F   ; couldn't open the Console Device
+    149
+    150 ;------ math.library
+          =05000000                     151 AN_MathLib   equ $05000000
+    152
+    153 ;------ clist.library
+          =06000000                     154 AN_CListLib   equ $06000000
+    155
+    156 ;------ dos.library
+          =07000000                     157 AN_DOSLib   equ $07000000
+          =07010001                     158 AN_StartMem   equ $07010001   ; no memory at startup
+          =07000002                     159 AN_EndTask   equ $07000002   ; EndTask didn't
+          =07000003                     160 AN_QPktFail   equ $07000003   ; Qpkt failure
+          =07000004                     161 AN_AsyncPkt   equ $07000004   ; Unexpected packet received
+          =07000005                     162 AN_FreeVec   equ $07000005   ; Freevec failed
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          =07000006                     163 AN_DiskBlkSeq   equ $07000006   ; Disk block sequence error
+          =07000007                     164 AN_BitMap   equ $07000007   ; Bitmap corrupt
+          =07000008                     165 AN_KeyFree   equ $07000008   ; Key already free
+          =07000009                     166 AN_BadChkSum   equ $07000009   ; Invalid checksum
+          =0700000A                     167 AN_DiskError   equ $0700000A   ; Disk Error
+          =0700000B                     168 AN_KeyRange   equ $0700000B   ; Key out of range
+          =0700000C                     169 AN_BadOverlay   equ $0700000C   ; Bad overlay
+    170
+    171 ;------ ramlib.library
+          =08000000                     172 AN_RAMLib   equ $08000000
+    173
+    174 ;------ icon.library
+          =09000000                     175 AN_IconLib   equ $09000000
+    176
+    177 ;------ audio.device
+          =10000000                     178 AN_AudioDev   equ $10000000
+    179
+    180 ;------ console.device
+          =11000000                     181 AN_ConsoleDev   equ $11000000
+    182
+    183 ;------ gameport.device
+          =12000000                     184 AN_GamePortDev   equ $12000000
+    185
+    186 ;------ keyboard.device
+          =13000000                     187 AN_KeyboardDev   equ $13000000
+    188
+    189 ;------ trackdisk.device
+          =14000000                     190 AN_TrackDiskDev equ $14000000
+          =14000001                     191 AN_TDCalibSeek   equ $14000001   ; calibrate: seek error
+          =14000002                     192 AN_TDDelay   equ $14000002   ; delay: error on timer wait
+    193
+    194 ;------   timer.device
+          =15000000                     195 AN_TimerDev   equ $15000000
+          =15000001                     196 AN_TMBadReq   equ $15000001   ; bad request
+    197
+    198 ;------ cia.resource
+          =20000000                     199 AN_CIARsrc   equ $20000000
+    200
+    201 ;------   disk.resource
+          =21000000                     202 AN_DiskRsrc    equ $21000000
+          =21000001                     203 AN_DRHasDisk   equ $21000001   : get unit: already has disk
+          =21000002                     204 AN_DRIntNoAct   equ $21000002   ; interrupt: no active unit
+    205
+    206 ;------ misc.resource
+          =22000000                     207 AN_MiscRsrc   equ $22000000
+    208
+    209 ;------ bootstrap
+          =30000000                     210 AN_BootStrap    equ $30000000
+          =30000001                     211 AN_BootError   equ $30000001   ; boot code returned an error
+    212
+    213 ;------ workbench
+          =31000000                     214 AN_Workbench    equ $31000000
+    215
+    216     ENDC
+     10         include "exec/initializers.i"
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+           True                           1     IFND EXEC_INITIALIZERS_I
+          >0001                           2 EXEC_INITIALIZERS_I SET 1
+      3 *********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: initializers.i,v 1.0 85/08/28 15:09:29 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+     17
+     18 INITBYTE        MACRO   * &offset,&value
+     19                 DC.B    $e0
+     20                 DC.B    0
+     21                 DC.W    \1
+     22                 DC.B    \2
+     23                 DC.B    0
+     24                 ENDM
+     25
+     26 INITWORD        MACRO   * &offset,&value
+     27                 DC.B    $d0
+     28                 DC.B    0
+     29                 DC.W    \1
+     30                 DC.W    \2
+     31                 ENDM
+     32
+     33 INITLONG        MACRO   * &offset,&value
+     34                 DC.B    $c0
+     35                 DC.B    0
+     36                 DC.W    \1
+     37                 DC.L    \2
+     38                 ENDM
+     39
+     40 INITSTRUCT  MACRO   * &size,&offset,&value,&count
+     41        DS.W    0
+     42             IFC     '\4',''
+     43 COUNT\@     SET     0
+     44        ENDC
+     45             IFNC    '\4',''
+     46 COUNT\@     SET     \4
+     47        ENDC
+     48 CMD\@       SET     (((\1)<<4)!COUNT\@)
+     49             IFLE    (\2)-255
+     50             DC.B    (CMD\@)!$80
+     51             DC.B    \2
+     52        MEXIT
+     53        ENDC
+     54             DC.B    CMD\@!$0C0
+     55             DC.B    (((\2)>>16)&$0FF)
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     56             DC.W    ((\2)&$0FFFF)
+     57             ENDM
+     58
+     59     ENDC
+     11         include "exec/memory.i"
+           True                           1     IFND EXEC_MEMORY_I
+          >0001                           2 EXEC_MEMORY_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: memory.i,v 1.0 85/08/28 15:12:02 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_NODES_I
+     18     INCLUDE "exec/nodes.i"
+     19     ENDC
+     20
+     21
+     22 *---------------------------------------------------------------------
+     23 *
+     24 *   Memory List Structures
+     25 *
+     26 *---------------------------------------------------------------------
+     27 *
+     28 *   A memory list appears in two forms:  One is a requirements list*
+     29 *   the other is a list of already allocated memory.  The format is
+     30 *   the same, with the reqirements/address field occupying the same
+     31 *   position.
+     32 *
+     33 *   The format is a linked list of ML structures each of which has
+     34 *   an array of ME entries.
+     35 *
+     36 *---------------------------------------------------------------------
+     37
+     38  STRUCTURE ML,LN_SIZE
+          >0000                          38+ML          SET     0         * for assembler's sake
+          >000E                          38+SOFFSET     SET     LN_SIZE
+     39     UWORD   ML_NUMENTRIES           * The number of ME structures that follow
+          =000E                          39+ML_NUMENTRIES EQU   SOFFSET
+          >0010                          39+SOFFSET     SET     SOFFSET+2
+     40     LABEL   ML_ME                   * where the ME structures begin
+          =0010                          40+ML_ME       EQU     SOFFSET
+     41     LABEL   ML_SIZE
+          =0010                          41+ML_SIZE     EQU     SOFFSET
+     42
+     43
+     44  STRUCTURE ME,0
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          >0000                          44+ME          SET     0         * for assembler's sake
+          >0000                          44+SOFFSET     SET     0
+     45     LABEL   ME_REQS                 * the AllocMem requirements
+          =0000                          45+ME_REQS     EQU     SOFFSET
+     46     APTR    ME_ADDR                 * the address of this block (an alias
+          =0000                          46+ME_ADDR     EQU     SOFFSET
+          >0004                          46+SOFFSET     SET     SOFFSET+4
+     47 *                                   *   for the same location as ME_REQS)
+     48     ULONG   ME_LENGTH               * the length of this region
+          =0004                          48+ME_LENGTH   EQU     SOFFSET
+          >0008                          48+SOFFSET     SET     SOFFSET+4
+     49     LABEL   ME_SIZE
+          =0008                          49+ME_SIZE     EQU     SOFFSET
+     50
+     51
+     52 *------ memory options:
+     53
+     54     BITDEF  MEM,PUBLIC,0
+     54+            BITDEF0 MEM,PUBLIC,B_,0
+          =0000                          54+MEMB_PUBLIC EQU     0
+          >0001                          54+.009BITDEF  SET     1<<0
+     54+            BITDEF0 MEM,PUBLIC,F_,.009BITDEF
+          =0001                          54+MEMF_PUBLIC EQU     .009BITDEF
+     55     BITDEF  MEM,CHIP,1
+     55+            BITDEF0 MEM,CHIP,B_,1
+          =0001                          55+MEMB_CHIP   EQU     1
+          >0002                          55+.010BITDEF  SET     1<<1
+     55+            BITDEF0 MEM,CHIP,F_,.010BITDEF
+          =0002                          55+MEMF_CHIP   EQU     .010BITDEF
+     56     BITDEF  MEM,FAST,2
+     56+            BITDEF0 MEM,FAST,B_,2
+          =0002                          56+MEMB_FAST   EQU     2
+          >0004                          56+.011BITDEF  SET     1<<2
+     56+            BITDEF0 MEM,FAST,F_,.011BITDEF
+          =0004                          56+MEMF_FAST   EQU     .011BITDEF
+     57     BITDEF  MEM,CLEAR,16
+     57+            BITDEF0 MEM,CLEAR,B_,16
+          =0010                          57+MEMB_CLEAR  EQU     16
+          >00010000                      57+.012BITDEF  SET     1<<16
+     57+            BITDEF0 MEM,CLEAR,F_,.012BITDEF
+          =00010000                      57+MEMF_CLEAR  EQU     .012BITDEF
+     58     BITDEF  MEM,LARGEST,17
+     58+            BITDEF0 MEM,LARGEST,B_,17
+          =0011                          58+MEMB_LARGEST EQU    17
+          >00020000                      58+.013BITDEF  SET     1<<17
+     58+            BITDEF0 MEM,LARGEST,F_,.013BITDEF
+          =00020000                      58+MEMF_LARGEST EQU    .013BITDEF
+     59
+     60
+     61 *------ alignment rules for a memory block:
+     62
+          =0008                          63 MEM_BLOCKSIZE   EQU 8
+          =0007                          64 MEM_BLOCKMASK   EQU (MEM_BLOCKSIZE-1)
+     65
+     66
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     67 *---------------------------------------------------------------------
+     68 *
+     69 *   Memory Region Header
+     70 *
+     71 *---------------------------------------------------------------------
+     72
+     73  STRUCTURE  MH,LN_SIZE
+          >0000                          73+MH          SET     0         * for assembler's sake
+          >000E                          73+SOFFSET     SET     LN_SIZE
+     74     UWORD   MH_ATTRIBUTES           * characteristics of this region
+          =000E                          74+MH_ATTRIBUTES EQU   SOFFSET
+          >0010                          74+SOFFSET     SET     SOFFSET+2
+     75     APTR    MH_FIRST                * first free region
+          =0010                          75+MH_FIRST    EQU     SOFFSET
+          >0014                          75+SOFFSET     SET     SOFFSET+4
+     76     APTR    MH_LOWER                * lower memory bound
+          =0014                          76+MH_LOWER    EQU     SOFFSET
+          >0018                          76+SOFFSET     SET     SOFFSET+4
+     77     APTR    MH_UPPER                * upper memory bound+1
+          =0018                          77+MH_UPPER    EQU     SOFFSET
+          >001C                          77+SOFFSET     SET     SOFFSET+4
+     78     ULONG   MH_FREE                 * number of free bytes
+          =001C                          78+MH_FREE     EQU     SOFFSET
+          >0020                          78+SOFFSET     SET     SOFFSET+4
+     79     LABEL   MH_SIZE
+          =0020                          79+MH_SIZE     EQU     SOFFSET
+     80
+     81
+     82 *---------------------------------------------------------------------
+     83 *
+     84 *   Memory Chunk
+     85 *
+     86 *---------------------------------------------------------------------
+     87
+     88  STRUCTURE  MC,0
+          >0000                          88+MC          SET     0         * for assembler's sake
+          >0000                          88+SOFFSET     SET     0
+     89     APTR    MC_NEXT                 * ptr to next chunk
+          =0000                          89+MC_NEXT     EQU     SOFFSET
+          >0004                          89+SOFFSET     SET     SOFFSET+4
+     90     ULONG   MC_BYTES                * chunk byte size
+          =0004                          90+MC_BYTES    EQU     SOFFSET
+          >0008                          90+SOFFSET     SET     SOFFSET+4
+     91     APTR    MC_SIZE
+          =0008                          91+MC_SIZE     EQU     SOFFSET
+          >000C                          91+SOFFSET     SET     SOFFSET+4
+     92
+     93     ENDC
+     12         include "exec/resident.i"
+           True                           1     IFND EXEC_RESIDENT_I
+          >0001                           2 EXEC_RESIDENT_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: resident.i,v 1.0 85/08/28 15:13:41 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+     17
+     18 *----------------------------------------------------------------
+     19 *
+     20 *   Resident Module Tag
+     21 *
+     22 *----------------------------------------------------------------
+     23
+     24  STRUCTURE RT,0
+          >0000                          24+RT          SET     0         * for assembler's sake
+          >0000                          24+SOFFSET     SET     0
+     25     UWORD RT_MATCHWORD         * word to match
+          =0000                          25+RT_MATCHWORD EQU    SOFFSET
+          >0002                          25+SOFFSET     SET     SOFFSET+2
+     26     APTR  RT_MATCHTAG         * pointer to structure base
+          =0002                          26+RT_MATCHTAG EQU     SOFFSET
+          >0006                          26+SOFFSET     SET     SOFFSET+4
+     27     APTR  RT_ENDSKIP         * address to continue scan
+          =0006                          27+RT_ENDSKIP  EQU     SOFFSET
+          >000A                          27+SOFFSET     SET     SOFFSET+4
+     28     UBYTE RT_FLAGS           * various tag flags
+          =000A                          28+RT_FLAGS    EQU     SOFFSET
+          >000B                          28+SOFFSET     SET     SOFFSET+1
+     29     UBYTE RT_VERSION         * release version number
+          =000B                          29+RT_VERSION  EQU     SOFFSET
+          >000C                          29+SOFFSET     SET     SOFFSET+1
+     30     UBYTE RT_TYPE            * type of module
+          =000C                          30+RT_TYPE     EQU     SOFFSET
+          >000D                          30+SOFFSET     SET     SOFFSET+1
+     31     BYTE  RT_PRI             * initialization priority
+          =000D                          31+RT_PRI      EQU     SOFFSET
+          >000E                          31+SOFFSET     SET     SOFFSET+1
+     32     APTR  RT_NAME            * pointer to node name
+          =000E                          32+RT_NAME     EQU     SOFFSET
+          >0012                          32+SOFFSET     SET     SOFFSET+4
+     33     APTR  RT_IDSTRING           * pointer to id string
+          =0012                          33+RT_IDSTRING EQU     SOFFSET
+          >0016                          33+SOFFSET     SET     SOFFSET+4
+     34     APTR  RT_INIT            * pointer to init code
+          =0016                          34+RT_INIT     EQU     SOFFSET
+          >001A                          34+SOFFSET     SET     SOFFSET+4
+     35     LABEL RT_SIZE
+          =001A                          35+RT_SIZE     EQU     SOFFSET
+     36
+     37
+     38 *------ Match word definition:
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     39
+          =4AFC                          40 RTC_MATCHWORD   EQU   $4AFC      * (ILLEGAL instruction)
+     41
+     42
+     43 *------ RT_FLAGS bit and field definitions:
+     44
+     45     BITDEF RT,COLDSTART,0
+     45+            BITDEF0 RT,COLDSTART,B_,0
+          =0000                          45+RTB_COLDSTART EQU   0
+          >0001                          45+.014BITDEF  SET     1<<0
+     45+            BITDEF0 RT,COLDSTART,F_,.014BITDEF
+          =0001                          45+RTF_COLDSTART EQU   .014BITDEF
+     46     BITDEF RT,AUTOINIT,7      * RT_INIT points to data
+     46+            BITDEF0 RT,AUTOINIT,B_,7
+          =0007                          46+RTB_AUTOINIT EQU    7
+          >0080                          46+.015BITDEF  SET     1<<7
+     46+            BITDEF0 RT,AUTOINIT,F_,.015BITDEF
+          =0080                          46+RTF_AUTOINIT EQU    .015BITDEF
+     47
+     48 * Compatibility:
+          =0001                          49 RTM_WHEN   EQU    1      * field position in RT_FLAGS
+          =0000                          50 RTW_NEVER   EQU    0      * never ever init
+          =0001                          51 RTW_COLDSTART   EQU    1      * init at coldstart time
+     52
+     53     ENDC
+     13         include "exec/ables.i"
+           True                           1     IFND EXEC_ABLES_I
+          >0001                           2 EXEC_ABLES_I  SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: ables.i,v 1.0 85/08/28 15:05:30 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_TYPES_I
+     18     INCLUDE "exec/types.i"
+     19     ENDC
+     20
+           True                          21     IFND EXEC_EXECBASE_I
+     22     INCLUDE "exec/execbase.i"
+           True                           1     IFND EXEC_EXECBASE_I
+          >0001                           2 EXEC_EXECBASE_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: execbase.i,v 1.0 85/08/28 15:08:25 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_LISTS_I
+     18     INCLUDE "exec/lists.i"
+     19     ENDC
+     20
+           True                          21     IFND EXEC_INTERRUPTS_I
+     22     INCLUDE "exec/interrupts.i"
+           True                           1     IFND EXEC_INTERRUPTS_I
+          >0001                           2 EXEC_INTERRUPTS_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: interrupts.i,v 1.0 85/08/28 15:10:16 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_NODES_I
+     18     INCLUDE "exec/nodes.i"
+     19     ENDC
+     20
+           False                         21     IFND EXEC_LISTS_I
+     22     INCLUDE "exec/lists.i"
+     23     ENDC
+     24
+     25
+     26 *----------------------------------------------------------------
+     27 *
+     28 *   Interrupt Structure
+     29 *
+     30 *----------------------------------------------------------------
+     31
+     32  STRUCTURE  IS,LN_SIZE
+          >0000                          32+IS          SET     0         * for assembler's sake
+          >000E                          32+SOFFSET     SET     LN_SIZE
+     33     APTR    IS_DATA
+          =000E                          33+IS_DATA     EQU     SOFFSET
+          >0012                          33+SOFFSET     SET     SOFFSET+4
+     34     APTR    IS_CODE
+          =0012                          34+IS_CODE     EQU     SOFFSET
+          >0016                          34+SOFFSET     SET     SOFFSET+4
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     35     LABEL   IS_SIZE
+          =0016                          35+IS_SIZE     EQU     SOFFSET
+     36
+     37
+     38 *---------------------------------------------------------------------
+     39 *
+     40 *   Exec Internal Interrupt Vectors
+     41 *
+     42 *---------------------------------------------------------------------
+     43
+     44  STRUCTURE  IV,0
+          >0000                          44+IV          SET     0         * for assembler's sake
+          >0000                          44+SOFFSET     SET     0
+     45     APTR    IV_DATA
+          =0000                          45+IV_DATA     EQU     SOFFSET
+          >0004                          45+SOFFSET     SET     SOFFSET+4
+     46     APTR    IV_CODE
+          =0004                          46+IV_CODE     EQU     SOFFSET
+          >0008                          46+SOFFSET     SET     SOFFSET+4
+     47     APTR    IV_NODE
+          =0008                          47+IV_NODE     EQU     SOFFSET
+          >000C                          47+SOFFSET     SET     SOFFSET+4
+     48     LABEL   IV_SIZE
+          =000C                          48+IV_SIZE     EQU     SOFFSET
+     49
+     50
+     51 *------ System Flag bits (in SysBase.SysFlags )
+     52
+     53     BITDEF  S,SAR,15        * scheduling attention required
+     53+            BITDEF0 S,SAR,B_,15
+          =000F                          53+SB_SAR      EQU     15
+          >8000                          53+.016BITDEF  SET     1<<15
+     53+            BITDEF0 S,SAR,F_,.016BITDEF
+          =8000                          53+SF_SAR      EQU     .016BITDEF
+     54     BITDEF  S,TQE,14        * time quantum expended -- time to resched
+     54+            BITDEF0 S,TQE,B_,14
+          =000E                          54+SB_TQE      EQU     14
+          >4000                          54+.017BITDEF  SET     1<<14
+     54+            BITDEF0 S,TQE,F_,.017BITDEF
+          =4000                          54+SF_TQE      EQU     .017BITDEF
+     55     BITDEF  S,SINT,13
+     55+            BITDEF0 S,SINT,B_,13
+          =000D                          55+SB_SINT     EQU     13
+          >2000                          55+.018BITDEF  SET     1<<13
+     55+            BITDEF0 S,SINT,F_,.018BITDEF
+          =2000                          55+SF_SINT     EQU     .018BITDEF
+     56
+     57
+     58 *---------------------------------------------------------------------
+     59 *
+     60 *   Software Interrupt List Headers
+     61 *
+     62 *---------------------------------------------------------------------
+     63
+     64  STRUCTURE  SH,LH_SIZE
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          >0000                          64+SH          SET     0         * for assembler's sake
+          >000E                          64+SOFFSET     SET     LH_SIZE
+     65     UWORD   SH_PAD
+          =000E                          65+SH_PAD      EQU     SOFFSET
+          >0010                          65+SOFFSET     SET     SOFFSET+2
+     66     LABEL   SH_SIZE
+          =0010                          66+SH_SIZE     EQU     SOFFSET
+     67
+          =00F0                          68 SIH_PRIMASK  EQU   $0F0
+          =0005                          69 SIH_QUEUES   EQU   5
+     70
+     71     ENDC
+     23     ENDC
+     24
+           False                         25     IFND EXEC_LIBRARIES_I
+     26     INCLUDE "exec/libraries.i"
+     27     ENDC
+     28
+     29
+     30 ******* Static System Variables **************************************
+     31
+     32  STRUCTURE  ExecBase,LIB_SIZE      ; Standard library node
+          >0000                          32+ExecBase    SET     0         * for assembler's sake
+          >0022                          32+SOFFSET     SET     LIB_SIZE
+     33
+     34             UWORD   SoftVer         ; soft revision of EXEC
+          =0022                          34+SoftVer     EQU     SOFFSET
+          >0024                          34+SOFFSET     SET     SOFFSET+2
+     35        WORD   LowMemChkSum   ; checksum of 68000 trap vectors
+          =0024                          35+LowMemChkSum EQU    SOFFSET
+          >0026                          35+SOFFSET     SET     SOFFSET+2
+     36             ULONG   ChkBase         ; system base pointer complement
+          =0026                          36+ChkBase     EQU     SOFFSET
+          >002A                          36+SOFFSET     SET     SOFFSET+4
+     37             APTR   ColdCapture     ; cold soft capture vector
+          =002A                          37+ColdCapture EQU     SOFFSET
+          >002E                          37+SOFFSET     SET     SOFFSET+4
+     38             APTR   CoolCapture     ; cool soft capture vector
+          =002E                          38+CoolCapture EQU     SOFFSET
+          >0032                          38+SOFFSET     SET     SOFFSET+4
+     39             APTR   WarmCapture     ; warm soft capture vector
+          =0032                          39+WarmCapture EQU     SOFFSET
+          >0036                          39+SOFFSET     SET     SOFFSET+4
+     40             APTR   SysStkUpper     ; system stack base   (upper bound)
+          =0036                          40+SysStkUpper EQU     SOFFSET
+          >003A                          40+SOFFSET     SET     SOFFSET+4
+     41             APTR   SysStkLower     ; top of system stack (lower bound)
+          =003A                          41+SysStkLower EQU     SOFFSET
+          >003E                          41+SOFFSET     SET     SOFFSET+4
+     42             ULONG   MaxLocMem   ; last calculated local memory max
+          =003E                          42+MaxLocMem   EQU     SOFFSET
+          >0042                          42+SOFFSET     SET     SOFFSET+4
+     43        APTR   DebugEntry   ; global debugger entry point
+          =0042                          43+DebugEntry  EQU     SOFFSET
+          >0046                          43+SOFFSET     SET     SOFFSET+4
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     44        APTR   DebugData   ; global debugger data segment
+          =0046                          44+DebugData   EQU     SOFFSET
+          >004A                          44+SOFFSET     SET     SOFFSET+4
+     45        APTR   AlertData   ; alert data segment
+          =004A                          45+AlertData   EQU     SOFFSET
+          >004E                          45+SOFFSET     SET     SOFFSET+4
+     46        APTR   RsvdExt      ; reserved
+          =004E                          46+RsvdExt     EQU     SOFFSET
+          >0052                          46+SOFFSET     SET     SOFFSET+4
+     47
+     48             WORD   ChkSum       ; for all of the above
+          =0052                          48+ChkSum      EQU     SOFFSET
+          >0054                          48+SOFFSET     SET     SOFFSET+2
+     49
+     50
+     51 ******* Interrupt Related ********************************************
+     52
+     53             LABEL   IntVects
+          =0054                          53+IntVects    EQU     SOFFSET
+     54             STRUCT   IVTBE,IV_SIZE
+          =0054                          54+IVTBE       EQU     SOFFSET
+          >0060                          54+SOFFSET     SET     SOFFSET+IV_SIZE
+     55             STRUCT   IVDSKBLK,IV_SIZE
+          =0060                          55+IVDSKBLK    EQU     SOFFSET
+          >006C                          55+SOFFSET     SET     SOFFSET+IV_SIZE
+     56             STRUCT   IVSOFTINT,IV_SIZE
+          =006C                          56+IVSOFTINT   EQU     SOFFSET
+          >0078                          56+SOFFSET     SET     SOFFSET+IV_SIZE
+     57             STRUCT   IVPORTS,IV_SIZE
+          =0078                          57+IVPORTS     EQU     SOFFSET
+          >0084                          57+SOFFSET     SET     SOFFSET+IV_SIZE
+     58             STRUCT   IVCOPER,IV_SIZE
+          =0084                          58+IVCOPER     EQU     SOFFSET
+          >0090                          58+SOFFSET     SET     SOFFSET+IV_SIZE
+     59             STRUCT   IVVERTB,IV_SIZE
+          =0090                          59+IVVERTB     EQU     SOFFSET
+          >009C                          59+SOFFSET     SET     SOFFSET+IV_SIZE
+     60             STRUCT   IVBLIT,IV_SIZE
+          =009C                          60+IVBLIT      EQU     SOFFSET
+          >00A8                          60+SOFFSET     SET     SOFFSET+IV_SIZE
+     61             STRUCT   IVAUD0,IV_SIZE
+          =00A8                          61+IVAUD0      EQU     SOFFSET
+          >00B4                          61+SOFFSET     SET     SOFFSET+IV_SIZE
+     62             STRUCT   IVAUD1,IV_SIZE
+          =00B4                          62+IVAUD1      EQU     SOFFSET
+          >00C0                          62+SOFFSET     SET     SOFFSET+IV_SIZE
+     63             STRUCT   IVAUD2,IV_SIZE
+          =00C0                          63+IVAUD2      EQU     SOFFSET
+          >00CC                          63+SOFFSET     SET     SOFFSET+IV_SIZE
+     64             STRUCT   IVAUD3,IV_SIZE
+          =00CC                          64+IVAUD3      EQU     SOFFSET
+          >00D8                          64+SOFFSET     SET     SOFFSET+IV_SIZE
+     65             STRUCT   IVRBF,IV_SIZE
+          =00D8                          65+IVRBF       EQU     SOFFSET
+          >00E4                          65+SOFFSET     SET     SOFFSET+IV_SIZE
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     66             STRUCT   IVDSKSYNC,IV_SIZE
+          =00E4                          66+IVDSKSYNC   EQU     SOFFSET
+          >00F0                          66+SOFFSET     SET     SOFFSET+IV_SIZE
+     67             STRUCT   IVEXTER,IV_SIZE
+          =00F0                          67+IVEXTER     EQU     SOFFSET
+          >00FC                          67+SOFFSET     SET     SOFFSET+IV_SIZE
+     68             STRUCT   IVINTEN,IV_SIZE
+          =00FC                          68+IVINTEN     EQU     SOFFSET
+          >0108                          68+SOFFSET     SET     SOFFSET+IV_SIZE
+     69        STRUCT   IVNMI,IV_SIZE
+          =0108                          69+IVNMI       EQU     SOFFSET
+          >0114                          69+SOFFSET     SET     SOFFSET+IV_SIZE
+     70
+     71
+     72 ******* Dynamic System Variables *************************************
+     73
+     74             APTR   ThisTask        ; pointer to current task
+          =0114                          74+ThisTask    EQU     SOFFSET
+          >0118                          74+SOFFSET     SET     SOFFSET+4
+     75             ULONG   IdleCount       ; idle counter
+          =0118                          75+IdleCount   EQU     SOFFSET
+          >011C                          75+SOFFSET     SET     SOFFSET+4
+     76             ULONG   DispCount       ; dispatch counter
+          =011C                          76+DispCount   EQU     SOFFSET
+          >0120                          76+SOFFSET     SET     SOFFSET+4
+     77             UWORD   Quantum         ; time slice quantum
+          =0120                          77+Quantum     EQU     SOFFSET
+          >0122                          77+SOFFSET     SET     SOFFSET+2
+     78             UWORD   Elapsed         ; current quantum ticks
+          =0122                          78+Elapsed     EQU     SOFFSET
+          >0124                          78+SOFFSET     SET     SOFFSET+2
+     79             UWORD   SysFlags        ; misc system flags
+          =0124                          79+SysFlags    EQU     SOFFSET
+          >0126                          79+SOFFSET     SET     SOFFSET+2
+     80             BYTE   IDNestCnt       ; interrupt disable nesting count
+          =0126                          80+IDNestCnt   EQU     SOFFSET
+          >0127                          80+SOFFSET     SET     SOFFSET+1
+     81             BYTE   TDNestCnt       ; task disable nesting count
+          =0127                          81+TDNestCnt   EQU     SOFFSET
+          >0128                          81+SOFFSET     SET     SOFFSET+1
+     82
+     83             UWORD   AttnFlags       ; interrupt attention
+          =0128                          83+AttnFlags   EQU     SOFFSET
+          >012A                          83+SOFFSET     SET     SOFFSET+2
+     84             UWORD   AttnResched     ; rescheduling attention
+          =012A                          84+AttnResched EQU     SOFFSET
+          >012C                          84+SOFFSET     SET     SOFFSET+2
+     85             APTR   ResModules   ; pointer to resident module array
+          =012C                          85+ResModules  EQU     SOFFSET
+          >0130                          85+SOFFSET     SET     SOFFSET+4
+     86
+     87        APTR   TaskTrapCode   ; default task trap routine
+          =0130                          87+TaskTrapCode EQU    SOFFSET
+          >0134                          87+SOFFSET     SET     SOFFSET+4
+     88        APTR   TaskExceptCode   ; default task exception code
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          =0134                          88+TaskExceptCode EQU  SOFFSET
+          >0138                          88+SOFFSET     SET     SOFFSET+4
+     89        APTR   TaskExitCode   ; default task exit code
+          =0138                          89+TaskExitCode EQU    SOFFSET
+          >013C                          89+SOFFSET     SET     SOFFSET+4
+     90        ULONG   TaskSigAlloc   ; preallocated signal mask
+          =013C                          90+TaskSigAlloc EQU    SOFFSET
+          >0140                          90+SOFFSET     SET     SOFFSET+4
+     91        UWORD       TaskTrapAlloc   ; preallocated trap mask
+          =0140                          91+TaskTrapAlloc EQU   SOFFSET
+          >0142                          91+SOFFSET     SET     SOFFSET+2
+     92
+     93
+     94 ******* System List Headers ******************************************
+     95
+     96             STRUCT   MemList,LH_SIZE
+          =0142                          96+MemList     EQU     SOFFSET
+          >0150                          96+SOFFSET     SET     SOFFSET+LH_SIZE
+     97        STRUCT   ResourceList,LH_SIZE
+          =0150                          97+ResourceList EQU    SOFFSET
+          >015E                          97+SOFFSET     SET     SOFFSET+LH_SIZE
+     98             STRUCT   DeviceList,LH_SIZE
+          =015E                          98+DeviceList  EQU     SOFFSET
+          >016C                          98+SOFFSET     SET     SOFFSET+LH_SIZE
+     99        STRUCT   IntrList,LH_SIZE
+          =016C                          99+IntrList    EQU     SOFFSET
+          >017A                          99+SOFFSET     SET     SOFFSET+LH_SIZE
+    100             STRUCT   LibList,LH_SIZE
+          =017A                         100+LibList     EQU     SOFFSET
+          >0188                         100+SOFFSET     SET     SOFFSET+LH_SIZE
+    101             STRUCT   PortList,LH_SIZE
+          =0188                         101+PortList    EQU     SOFFSET
+          >0196                         101+SOFFSET     SET     SOFFSET+LH_SIZE
+    102             STRUCT   TaskReady,LH_SIZE
+          =0196                         102+TaskReady   EQU     SOFFSET
+          >01A4                         102+SOFFSET     SET     SOFFSET+LH_SIZE
+    103             STRUCT   TaskWait,LH_SIZE
+          =01A4                         103+TaskWait    EQU     SOFFSET
+          >01B2                         103+SOFFSET     SET     SOFFSET+LH_SIZE
+    104
+    105             STRUCT   SoftInts,SH_SIZE*5
+          =01B2                         105+SoftInts    EQU     SOFFSET
+          >0202                         105+SOFFSET     SET     SOFFSET+SH_SIZE*5
+    106
+    107        STRUCT   LastAlert,4*4
+          =0202                         107+LastAlert   EQU     SOFFSET
+          >0212                         107+SOFFSET     SET     SOFFSET+4*4
+    108
+    109        LONG   ExecBaseReserved,4*8
+          =0212                         109+ExecBaseReserved EQU SOFFSET
+          >0216                         109+SOFFSET     SET     SOFFSET+4
+    110
+    111             LABEL   SYSBASESIZE
+          =0216                         111+SYSBASESIZE EQU     SOFFSET
+    112
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+    113     ENDC
+     23     ENDC
+     24
+     25
+     26 *----------------------------------------------------------------
+     27 *
+     28 *   Interrupt Exclusion Macros
+     29 *
+     30 *----------------------------------------------------------------
+     31
+     32 INT_ABLES   MACRO                       * externals for dis/enable
+     33             XREF    _intena
+     34             ENDM
+     35
+     36
+     37 DISABLE     MACRO   * [scratchReg]
+     38        IFC       '\1',''
+     39             MOVE.W  #$04000,_intena     *(NOT IF_SETCLR)+IF_INTEN
+     40             ADDQ.B  #1,IDNestCnt(A6)
+     41        ENDC
+     42        IFNC    '\1',''
+     43        MOVE.L  4,\1
+     44             MOVE.W  #$04000,_intena     *(NOT IF_SETCLR)+IF_INTEN
+     45             ADDQ.B  #1,IDNestCnt(\1)
+     46        ENDC
+     47             ENDM
+     48
+     49
+     50 ENABLE      MACRO   * [scratchReg]
+     51        IFC       '\1',''
+     52             SUBQ.B  #1,IDNestCnt(A6)
+     53        BGE.S   ENABLE\@
+     54             MOVE.W  #$0C000,_intena     *IF_SETCLR+IF_INTEN
+     55 ENABLE\@:
+     56        ENDC
+     57        IFNC    '\1',''
+     58        MOVE.L  4,\1
+     59        SUBQ.B  #1,IDNestCnt(\1)
+     60        BGE.S   ENABLE\@
+     61        MOVE.W  #$0C000,_intena
+     62 ENABLE\@:
+     63        ENDC
+     64             ENDM
+     65
+     66
+     67 *----------------------------------------------------------------
+     68 *
+     69 *   Tasking Exclusion Macros
+     70 *
+     71 *----------------------------------------------------------------
+     72
+     73 TASK_ABLES  MACRO
+     74 *       INCLUDE 'execbase.i' for TDNestCnt offset
+     75             XREF    _LVOPermit
+     76             ENDM
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     77
+     78
+     79 FORBID       MACRO
+     80             ADDQ.B  #1,TDNestCnt(A6)
+     81        ENDM
+     82
+     83
+     84 PERMIT      MACRO
+     85        JSR       _LVOPermit(A6)
+     86        ENDM
+     87
+     88     ENDC
+     14         include "exec/errors.i"
+           True                           1     IFND EXEC_ERRORS_I
+          >0001                           2 EXEC_ERRORS_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: errors.i,v 1.0 85/08/28 15:07:26 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+     17 *------ Standard IO Errors:
+     18
+          =FFFFFFFF                      19 IOERR_OPENFAIL  EQU   -1      * device/unit failed to open
+          =FFFFFFFE                      20 IOERR_ABORTED   EQU   -2      * request aborted
+          =FFFFFFFD                      21 IOERR_NOCMD   EQU   -3      * command not supported
+          =FFFFFFFC                      22 IOERR_BADLENGTH EQU   -4      * not a valid length
+     23
+     24
+          =FFFFFFFF                      25 ERR_OPENDEVICE   EQU  IOERR_OPENFAIL   * REMOVE !!!
+     26
+     27     ENDC
+     15         include "libraries/dos.i"
+      1 * Standard assembler header for Amiga DOS on the MC68000
+      2
+           True                           3    IFND LIBRARIES_DOS_I
+          >0001                           4 LIBRARIES_DOS_I            SET      1
+      5
+      6 *      IFND EXEC_TYPES_I
+      7 *      INCLUDE "exec/types.i"
+      8 *      ENDC
+      9
+     10
+     11 DOSNAME     MACRO
+     12       DC.B  'dos.library',0
+     13       ENDM
+     14
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     15 * Predefined Amiga DOS global constants
+     16
+     17 * Mode parameter to Open()
+          =03ED                          18 MODE_OLDFILE         EQU   1005   * Open existing file read/write
+     19 *                                 * positioned at begining of file.
+          =03EE                          20 MODE_NEWFILE         EQU   1006   * Open freshly created file (delete
+     21 *                                 * old file) read/write
+     22
+     23 * Relative position to Seek()
+          =FFFFFFFF                      24 OFFSET_BEGINING      EQU   -1     * relative to Begining Of File
+          =0000                          25 OFFSET_CURRENT       EQU    0     * relative to Current file position
+          =0001                          26 OFFSET_END           EQU    1     * relative to End Of File
+     27
+          =0008                          28 BITSPERBYTE          EQU   8
+          =0004                          29 BYTESPERLONG         EQU   4
+          =0020                          30 BITSPERLONG          EQU   32
+          =7FFFFFFF                      31 MAXINT               EQU   $7FFFFFFF
+          =80000000                      32 MININT               EQU   $80000000
+     33
+     34 * Passed as type to Lock()
+          =FFFFFFFE                      35 SHARED_LOCK          EQU   -2   ; File is readable by others
+          =FFFFFFFE                      36 ACCESS_READ          EQU   -2   ; Synonym
+          =FFFFFFFF                      37 EXCLUSIVE_LOCK       EQU   -1   ; No other access allowed
+          =FFFFFFFF                      38 ACCESS_WRITE         EQU   -1   ; Synonym
+     39
+     40
+     41  STRUCTURE DateStamp,0
+          >0000                          41+DateStamp   SET     0         * for assembler's sake
+          >0000                          41+SOFFSET     SET     0
+     42    LONG  ds_Days      ; Number of days since Jan. 1, 1978
+          =0000                          42+ds_Days     EQU     SOFFSET
+          >0004                          42+SOFFSET     SET     SOFFSET+4
+     43    LONG  ds_Minute      ; Number of minutes past midnight
+          =0004                          43+ds_Minute   EQU     SOFFSET
+          >0008                          43+SOFFSET     SET     SOFFSET+4
+     44    LONG  ds_Tick      ; Number of ticks past minute
+          =0008                          44+ds_Tick     EQU     SOFFSET
+          >000C                          44+SOFFSET     SET     SOFFSET+4
+     45    LABEL ds_SIZEOF      ; DateStamp
+          =000C                          45+ds_SIZEOF   EQU     SOFFSET
+          =0032                          46 TICKS_PER_SECOND EQU 50      ; Number of ticks in one second
+     47
+     48 * Returned by Examine() and ExInfo()
+     49  STRUCTURE FileInfoBlock,0
+          >0000                          49+FileInfoBlock SET   0         * for assembler's sake
+          >0000                          49+SOFFSET     SET     0
+     50    LONG   fib_DiskKey
+          =0000                          50+fib_DiskKey EQU     SOFFSET
+          >0004                          50+SOFFSET     SET     SOFFSET+4
+     51    LONG   fib_DirEntryType   ; Type of Directory. If < 0, then a plain file.
+          =0004                          51+fib_DirEntryType EQU SOFFSET
+          >0008                          51+SOFFSET     SET     SOFFSET+4
+     52             ; If > 0 a directory
+     53    STRUCT fib_FileName,108   ; Null terminated. Max 30 chars used for now
+          =0008                          53+fib_FileName EQU    SOFFSET
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          >0074                          53+SOFFSET     SET     SOFFSET+108
+     54    LONG   fib_Protection   ; bit mask of protection, rwxd are 3-0.
+          =0074                          54+fib_Protection EQU  SOFFSET
+          >0078                          54+SOFFSET     SET     SOFFSET+4
+     55    LONG   fib_EntryType
+          =0078                          55+fib_EntryType EQU   SOFFSET
+          >007C                          55+SOFFSET     SET     SOFFSET+4
+     56    LONG   fib_Size      ; Number of bytes in file
+          =007C                          56+fib_Size    EQU     SOFFSET
+          >0080                          56+SOFFSET     SET     SOFFSET+4
+     57    LONG   fib_NumBlocks      ; Number of blocks in file
+          =0080                          57+fib_NumBlocks EQU   SOFFSET
+          >0084                          57+SOFFSET     SET     SOFFSET+4
+     58    STRUCT fib_DateStamp,ds_SIZEOF ; Date file last changed.
+          =0084                          58+fib_DateStamp EQU   SOFFSET
+          >0090                          58+SOFFSET     SET     SOFFSET+ds_SIZEOF
+     59    STRUCT fib_Comment,116   ; Null terminated. Comment associated with file
+          =0090                          59+fib_Comment EQU     SOFFSET
+          >0104                          59+SOFFSET     SET     SOFFSET+116
+     60    LABEL  fib_SIZEOF      ; FileInfoBlock
+          =0104                          60+fib_SIZEOF  EQU     SOFFSET
+     61
+     62 * FIB stands for FileInfoBlock
+     63 * FIBB are bit definitions, FIBF are field definitions
+     64    BITDEF   FIB,READ,3
+     64+            BITDEF0 FIB,READ,B_,3
+          =0003                          64+FIBB_READ   EQU     3
+          >0008                          64+.019BITDEF  SET     1<<3
+     64+            BITDEF0 FIB,READ,F_,.019BITDEF
+          =0008                          64+FIBF_READ   EQU     .019BITDEF
+     65    BITDEF   FIB,WRITE,2
+     65+            BITDEF0 FIB,WRITE,B_,2
+          =0002                          65+FIBB_WRITE  EQU     2
+          >0004                          65+.020BITDEF  SET     1<<2
+     65+            BITDEF0 FIB,WRITE,F_,.020BITDEF
+          =0004                          65+FIBF_WRITE  EQU     .020BITDEF
+     66    BITDEF   FIB,EXECUTE,1
+     66+            BITDEF0 FIB,EXECUTE,B_,1
+          =0001                          66+FIBB_EXECUTE EQU    1
+          >0002                          66+.021BITDEF  SET     1<<1
+     66+            BITDEF0 FIB,EXECUTE,F_,.021BITDEF
+          =0002                          66+FIBF_EXECUTE EQU    .021BITDEF
+     67    BITDEF   FIB,DELETE,0
+     67+            BITDEF0 FIB,DELETE,B_,0
+          =0000                          67+FIBB_DELETE EQU     0
+          >0001                          67+.022BITDEF  SET     1<<0
+     67+            BITDEF0 FIB,DELETE,F_,.022BITDEF
+          =0001                          67+FIBF_DELETE EQU     .022BITDEF
+     68
+     69
+     70 * All BCPL data must be long word aligned.  BCPL pointers are the long word
+     71 * address (i.e byte address divided by 4 (>>2))
+     72
+     73 * Macro to indicate BCPL pointers
+     74 BPTR     MACRO                      * Long word pointer
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     75          LONG     \1
+     76          ENDM
+     77 BSTR     MACRO                      * Long word pointer to BCPL string.
+     78          LONG     \1
+     79          ENDM
+     80
+     81 * #define BADDR( bptr ) (bptr << 2) * Convert BPTR to byte addressed pointer
+     82
+     83 * BCPL strings have a length in the first byte and then the characters.
+     84 * For example:  s[0]=3 s[1]=S s[2]=Y s[3]=S
+     85
+     86 * returned by Info()
+     87  STRUCTURE InfoData,0
+          >0000                          87+InfoData    SET     0         * for assembler's sake
+          >0000                          87+SOFFSET     SET     0
+     88    LONG id_NumSoftErrors   * number of soft errors on disk
+          =0000                          88+id_NumSoftErrors EQU SOFFSET
+          >0004                          88+SOFFSET     SET     SOFFSET+4
+     89    LONG id_UnitNumber      * Which unit disk is (was) mounted on
+          =0004                          89+id_UnitNumber EQU   SOFFSET
+          >0008                          89+SOFFSET     SET     SOFFSET+4
+     90    LONG id_DiskState      * See defines below
+          =0008                          90+id_DiskState EQU    SOFFSET
+          >000C                          90+SOFFSET     SET     SOFFSET+4
+     91    LONG id_NumBlocks      * Number of blocks on disk
+          =000C                          91+id_NumBlocks EQU    SOFFSET
+          >0010                          91+SOFFSET     SET     SOFFSET+4
+     92    LONG id_NumBlocksUsed   * Number of block in use
+          =0010                          92+id_NumBlocksUsed EQU SOFFSET
+          >0014                          92+SOFFSET     SET     SOFFSET+4
+     93    LONG id_BytesPerBlock
+          =0014                          93+id_BytesPerBlock EQU SOFFSET
+          >0018                          93+SOFFSET     SET     SOFFSET+4
+     94    LONG id_DiskType      * Disk Type code
+          =0018                          94+id_DiskType EQU     SOFFSET
+          >001C                          94+SOFFSET     SET     SOFFSET+4
+     95    BSTR id_VolumeNode      * BCPL pointer to volume name (BCPL stirng)
+     95+         LONG     id_VolumeNode
+          =001C                          95+id_VolumeNode EQU   SOFFSET
+          >0020                          95+SOFFSET     SET     SOFFSET+4
+     96    LONG id_InUse      * Flag, zero if not in use
+          =0020                          96+id_InUse    EQU     SOFFSET
+          >0024                          96+SOFFSET     SET     SOFFSET+4
+     97    LABEL id_SIZEOF      * InfoData
+          =0024                          97+id_SIZEOF   EQU     SOFFSET
+     98
+     99 * ID stands for InfoData
+    100 *            Disk states
+          =0050                         101 ID_WRITE_PROTECTED   EQU   80   * Disk is write protected
+          =0051                         102 ID_VALIDATING      EQU   81   * Disk is currently being validated
+          =0052                         103 ID_VALIDATED      EQU   82   * Disk is consistent and writeable
+    104 *          Disk types
+          =FFFFFFFF                     105 ID_NO_DISK_PRESENT   EQU -1
+          =42414400                     106 ID_UNREADABLE_DISK   EQU  ('B'<<24)!('A'<<16)!('D'<<8)
+          =4E444F53                     107 ID_NOT_REALLY_DOS   EQU  ('N'<<24)!('D'<<16)!('O'<<8)!('S')
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          =444F5300                     108 ID_DOS_DISK      EQU  ('D'<<24)!('O'<<16)!('S'<<8)
+          =4B49434B                     109 ID_KICKSTART_DISK   EQU  ('K'<<24)!('I'<<16)!('C'<<8)!('K')
+    110
+    111 * Errors from IoErr(), etc.
+          =0067                         112 ERROR_NO_FREE_STORE               EQU  103
+          =00CA                         113 ERROR_OBJECT_IN_USE               EQU  202
+          =00CB                         114 ERROR_OBJECT_EXISTS               EQU  203
+          =00CD                         115 ERROR_OBJECT_NOT_FOUND            EQU  205
+          =00D1                         116 ERROR_ACTION_NOT_KNOWN            EQU  209
+          =00D2                         117 ERROR_INVALID_COMPONENT_NAME      EQU  210
+          =00D3                         118 ERROR_INVALID_LOCK                EQU  211
+          =00D4                         119 ERROR_OBJECT_WRONG_TYPE           EQU  212
+          =00D5                         120 ERROR_DISK_NOT_VALIDATED          EQU  213
+          =00D6                         121 ERROR_DISK_WRITE_PROTECTED        EQU  214
+          =00D7                         122 ERROR_RENAME_ACROSS_DEVICES       EQU  215
+          =00D8                         123 ERROR_DIRECTORY_NOT_EMPTY         EQU  216
+          =00DA                         124 ERROR_DEVICE_NOT_MOUNTED          EQU  218
+          =00DB                         125 ERROR_SEEK_ERROR                  EQU  219
+          =00DC                         126 ERROR_COMMENT_TOO_BIG             EQU  220
+          =00DD                         127 ERROR_DISK_FULL                   EQU  221
+          =00DE                         128 ERROR_DELETE_PROTECTED            EQU  222
+          =00DF                         129 ERROR_WRITE_PROTECTED             EQU  223
+          =00E0                         130 ERROR_READ_PROTECTED              EQU  224
+          =00E1                         131 ERROR_NOT_A_DOS_DISK              EQU  225
+          =00E2                         132 ERROR_NO_DISK                     EQU  226
+          =00E8                         133 ERROR_NO_MORE_ENTRIES             EQU  232
+    134
+    135 * These are the return codes used by convention by AmigaDOS commands
+    136 * See FAILAT and IF for relvance to EXECUTE files
+          =0000                         137 RETURN_OK                         EQU    0  * No problems, success
+          =0005                         138 RETURN_WARN                       EQU    5  * A warning only
+          =000A                         139 RETURN_ERROR                      EQU   10  * Something wrong
+          =0014                         140 RETURN_FAIL                       EQU   20  * Complete or severe failure
+    141
+    142 * Bit numbers that signal you that a user has issued a break
+    143    BITDEF   SIGBREAK,CTRL_C,12
+    143+            BITDEF0 SIGBREAK,CTRL_C,B_,12
+          =000C                         143+SIGBREAKB_CTRL_C EQU 12
+          >1000                         143+.023BITDEF  SET     1<<12
+    143+            BITDEF0 SIGBREAK,CTRL_C,F_,.023BITDEF
+          =1000                         143+SIGBREAKF_CTRL_C EQU .023BITDEF
+    144    BITDEF   SIGBREAK,CTRL_D,13
+    144+            BITDEF0 SIGBREAK,CTRL_D,B_,13
+          =000D                         144+SIGBREAKB_CTRL_D EQU 13
+          >2000                         144+.024BITDEF  SET     1<<13
+    144+            BITDEF0 SIGBREAK,CTRL_D,F_,.024BITDEF
+          =2000                         144+SIGBREAKF_CTRL_D EQU .024BITDEF
+    145    BITDEF   SIGBREAK,CTRL_E,14
+    145+            BITDEF0 SIGBREAK,CTRL_E,B_,14
+          =000E                         145+SIGBREAKB_CTRL_E EQU 14
+          >4000                         145+.025BITDEF  SET     1<<14
+    145+            BITDEF0 SIGBREAK,CTRL_E,F_,.025BITDEF
+          =4000                         145+SIGBREAKF_CTRL_E EQU .025BITDEF
+    146    BITDEF   SIGBREAK,CTRL_F,15
+    146+            BITDEF0 SIGBREAK,CTRL_F,B_,15
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          =000F                         146+SIGBREAKB_CTRL_F EQU 15
+          >8000                         146+.026BITDEF  SET     1<<15
+    146+            BITDEF0 SIGBREAK,CTRL_F,F_,.026BITDEF
+          =8000                         146+SIGBREAKF_CTRL_F EQU .026BITDEF
+    147
+    148    ENDC
+     16         include "libraries/dosextens.i"
+      1
+      2 * DOS structures not needed for the casual DOS user
+      3
+           True                           4    IFND  LIBRARIES_DOSEXTENS_I
+      5
+          >0001                           6 LIBRARIES_DOSEXTENS_I   SET   1
+      7
+           False                          8      IFND  EXEC_TYPES_I
+      9      INCLUDE "exec/types.i"
+     10      ENDC
+           True                          11      IFND  EXEC_TASKS_I
+     12      INCLUDE "exec/tasks.i"
+           True                           1     IFND EXEC_TASKS_I
+          >0001                           2 EXEC_TASKS_I SET 1
+      3 **********************************************************************
+      4 *
+      5 *   Commodore Amiga -- ROM Operating System Executive Include File
+      6 *
+      7 **********************************************************************
+      8 *
+      9 *   Source Control:
+     10 *
+     11 *   $Header: tasks.i,v 1.0 85/08/28 15:14:32 carl Exp $
+     12 *
+     13 *   $Locker:  $
+     14 *
+     15 **********************************************************************
+     16
+           False                         17     IFND EXEC_NODES_I
+     18     INCLUDE "exec/nodes.i"
+     19     ENDC
+     20
+           False                         21     IFND EXEC_LISTS_I
+     22     INCLUDE "exec/lists.i"
+     23     ENDC
+     24
+     25
+     26 *----------------------------------------------------------------
+     27 *
+     28 *   Task Control Structure
+     29 *
+     30 *----------------------------------------------------------------
+     31
+     32  STRUCTURE  TC,LN_SIZE
+          >0000                          32+TC          SET     0         * for assembler's sake
+          >000E                          32+SOFFSET     SET     LN_SIZE
+     33     UBYTE   TC_FLAGS
+          =000E                          33+TC_FLAGS    EQU     SOFFSET
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          >000F                          33+SOFFSET     SET     SOFFSET+1
+     34     UBYTE   TC_STATE
+          =000F                          34+TC_STATE    EQU     SOFFSET
+          >0010                          34+SOFFSET     SET     SOFFSET+1
+     35     BYTE    TC_IDNESTCNT            * intr disabled nesting
+          =0010                          35+TC_IDNESTCNT EQU    SOFFSET
+          >0011                          35+SOFFSET     SET     SOFFSET+1
+     36     BYTE    TC_TDNESTCNT            * task disabled nesting
+          =0011                          36+TC_TDNESTCNT EQU    SOFFSET
+          >0012                          36+SOFFSET     SET     SOFFSET+1
+     37     ULONG   TC_SIGALLOC             * sigs allocated
+          =0012                          37+TC_SIGALLOC EQU     SOFFSET
+          >0016                          37+SOFFSET     SET     SOFFSET+4
+     38     ULONG   TC_SIGWAIT              * sigs we are waiting for
+          =0016                          38+TC_SIGWAIT  EQU     SOFFSET
+          >001A                          38+SOFFSET     SET     SOFFSET+4
+     39     ULONG   TC_SIGRECVD             * sigs we have received
+          =001A                          39+TC_SIGRECVD EQU     SOFFSET
+          >001E                          39+SOFFSET     SET     SOFFSET+4
+     40     ULONG   TC_SIGEXCEPT            * sigs we take as exceptions
+          =001E                          40+TC_SIGEXCEPT EQU    SOFFSET
+          >0022                          40+SOFFSET     SET     SOFFSET+4
+     41     UWORD   TC_TRAPALLOC       * traps allocated
+          =0022                          41+TC_TRAPALLOC EQU    SOFFSET
+          >0024                          41+SOFFSET     SET     SOFFSET+2
+     42     UWORD   TC_TRAPABLE             * traps enabled
+          =0024                          42+TC_TRAPABLE EQU     SOFFSET
+          >0026                          42+SOFFSET     SET     SOFFSET+2
+     43     APTR    TC_EXCEPTDATA           * data for except proc
+          =0026                          43+TC_EXCEPTDATA EQU   SOFFSET
+          >002A                          43+SOFFSET     SET     SOFFSET+4
+     44     APTR    TC_EXCEPTCODE           * exception procedure
+          =002A                          44+TC_EXCEPTCODE EQU   SOFFSET
+          >002E                          44+SOFFSET     SET     SOFFSET+4
+     45     APTR    TC_TRAPDATA             * data for proc trap proc
+          =002E                          45+TC_TRAPDATA EQU     SOFFSET
+          >0032                          45+SOFFSET     SET     SOFFSET+4
+     46     APTR    TC_TRAPCODE             * proc trap procedure
+          =0032                          46+TC_TRAPCODE EQU     SOFFSET
+          >0036                          46+SOFFSET     SET     SOFFSET+4
+     47     APTR    TC_SPREG                * stack pointer
+          =0036                          47+TC_SPREG    EQU     SOFFSET
+          >003A                          47+SOFFSET     SET     SOFFSET+4
+     48     APTR    TC_SPLOWER              * stack lower bound
+          =003A                          48+TC_SPLOWER  EQU     SOFFSET
+          >003E                          48+SOFFSET     SET     SOFFSET+4
+     49     APTR    TC_SPUPPER              * stack upper bound + 2
+          =003E                          49+TC_SPUPPER  EQU     SOFFSET
+          >0042                          49+SOFFSET     SET     SOFFSET+4
+     50     APTR    TC_SWITCH               * task losing CPU
+          =0042                          50+TC_SWITCH   EQU     SOFFSET
+          >0046                          50+SOFFSET     SET     SOFFSET+4
+     51     APTR    TC_LAUNCH               * task getting CPU
+          =0046                          51+TC_LAUNCH   EQU     SOFFSET
+          >004A                          51+SOFFSET     SET     SOFFSET+4
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     52     STRUCT  TC_MEMENTRY,LH_SIZE     * allocated memory
+          =004A                          52+TC_MEMENTRY EQU     SOFFSET
+          >0058                          52+SOFFSET     SET     SOFFSET+LH_SIZE
+     53     APTR    TC_Userdata
+          =0058                          53+TC_Userdata EQU     SOFFSET
+          >005C                          53+SOFFSET     SET     SOFFSET+4
+     54     LABEL   TC_SIZE
+          =005C                          54+TC_SIZE     EQU     SOFFSET
+     55
+     56
+     57 *------ Flag Bits:
+     58
+     59     BITDEF  T,PROCTIME,0
+     59+            BITDEF0 T,PROCTIME,B_,0
+          =0000                          59+TB_PROCTIME EQU     0
+          >0001                          59+.027BITDEF  SET     1<<0
+     59+            BITDEF0 T,PROCTIME,F_,.027BITDEF
+          =0001                          59+TF_PROCTIME EQU     .027BITDEF
+     60     BITDEF  T,STACKCHK,4
+     60+            BITDEF0 T,STACKCHK,B_,4
+          =0004                          60+TB_STACKCHK EQU     4
+          >0010                          60+.028BITDEF  SET     1<<4
+     60+            BITDEF0 T,STACKCHK,F_,.028BITDEF
+          =0010                          60+TF_STACKCHK EQU     .028BITDEF
+     61     BITDEF  T,EXCEPT,5
+     61+            BITDEF0 T,EXCEPT,B_,5
+          =0005                          61+TB_EXCEPT   EQU     5
+          >0020                          61+.029BITDEF  SET     1<<5
+     61+            BITDEF0 T,EXCEPT,F_,.029BITDEF
+          =0020                          61+TF_EXCEPT   EQU     .029BITDEF
+     62     BITDEF  T,SWITCH,6
+     62+            BITDEF0 T,SWITCH,B_,6
+          =0006                          62+TB_SWITCH   EQU     6
+          >0040                          62+.030BITDEF  SET     1<<6
+     62+            BITDEF0 T,SWITCH,F_,.030BITDEF
+          =0040                          62+TF_SWITCH   EQU     .030BITDEF
+     63     BITDEF  T,LAUNCH,7
+     63+            BITDEF0 T,LAUNCH,B_,7
+          =0007                          63+TB_LAUNCH   EQU     7
+          >0080                          63+.031BITDEF  SET     1<<7
+     63+            BITDEF0 T,LAUNCH,F_,.031BITDEF
+          =0080                          63+TF_LAUNCH   EQU     .031BITDEF
+     64
+     65
+     66 *------ Task States:
+          =0000                          67 TS_INVALID  EQU     0
+          =0001                          68 TS_ADDED    EQU     TS_INVALID+1
+          =0002                          69 TS_RUN      EQU     TS_ADDED+1
+          =0003                          70 TS_READY    EQU     TS_RUN+1
+          =0004                          71 TS_WAIT     EQU     TS_READY+1
+          =0005                          72 TS_EXCEPT   EQU     TS_WAIT+1
+          =0006                          73 TS_REMOVED  EQU     TS_EXCEPT+1
+     74
+     75
+     76 *------ System Task Signals:
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     77
+          =0001                          78 SIGF_ABORT   EQU   $0001
+          =0002                          79 SIGF_CHILD   EQU   $0002
+          =0010                          80 SIGF_BLIT   EQU   $0010
+          =0100                          81 SIGF_DOS   EQU   $0100
+     82
+          =0000                          83 SIGB_ABORT   EQU   0
+          =0001                          84 SIGB_CHILD   EQU   1
+          =0004                          85 SIGB_BLIT   EQU   4
+          =0008                          86 SIGB_DOS   EQU   8
+     87
+     88
+          =FFFF                          89 SYS_SIGALLOC   EQU   $0FFFF      ; pre-allocated signals
+          =8000                          90 SYS_TRAPALLOC   EQU   $08000      ; pre-allocated traps
+     91
+     92     ENDC
+     13      ENDC
+           False                         14      IFND  EXEC_PORTS_I
+     15      INCLUDE "exec/ports.i"
+     16      ENDC
+           False                         17      IFND  EXEC_LIBRARIES_I
+     18      INCLUDE "exec/libraries.i"
+     19      ENDC
+     20
+           False                         21      IFND  LIBRARIES_DOS_I
+     22      INCLUDE "libraries/dos.i"
+     23      ENDC
+     24
+     25
+     26 * All DOS processes have this STRUCTure
+     27 * Create and DeviceProc returns pointer to the MsgPort in this STRUCTure
+     28 * Process_addr = DeviceProc(..) - TC_SIZE
+     29
+     30  STRUCTURE Process,0
+          >0000                          30+Process     SET     0         * for assembler's sake
+          >0000                          30+SOFFSET     SET     0
+     31     STRUCT  pr_Task,TC_SIZE
+          =0000                          31+pr_Task     EQU     SOFFSET
+          >005C                          31+SOFFSET     SET     SOFFSET+TC_SIZE
+     32     STRUCT  pr_MsgPort,MP_SIZE  * This is BPTR address from DOS functions
+          =005C                          32+pr_MsgPort  EQU     SOFFSET
+          >007E                          32+SOFFSET     SET     SOFFSET+MP_SIZE
+     33     WORD    pr_Pad              * Remaining variables on 4 byte boundaries
+          =007E                          33+pr_Pad      EQU     SOFFSET
+          >0080                          33+SOFFSET     SET     SOFFSET+2
+     34     BPTR    pr_SegList          * Array of seg lists used by this process
+     34+         LONG     pr_SegList
+          =0080                          34+pr_SegList  EQU     SOFFSET
+          >0084                          34+SOFFSET     SET     SOFFSET+4
+     35     LONG    pr_StackSize        * Size of process stack in bytes
+          =0084                          35+pr_StackSize EQU    SOFFSET
+          >0088                          35+SOFFSET     SET     SOFFSET+4
+     36     APTR    pr_GlobVec          * Global vector for this process (BCPL)
+          =0088                          36+pr_GlobVec  EQU     SOFFSET
+          >008C                          36+SOFFSET     SET     SOFFSET+4
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     37     LONG    pr_TaskNum          * CLI task number of zero if not a CLI
+          =008C                          37+pr_TaskNum  EQU     SOFFSET
+          >0090                          37+SOFFSET     SET     SOFFSET+4
+     38     BPTR    pr_StackBase        * Ptr to high memory end of process stack
+     38+         LONG     pr_StackBase
+          =0090                          38+pr_StackBase EQU    SOFFSET
+          >0094                          38+SOFFSET     SET     SOFFSET+4
+     39     LONG    pr_Result2          * Value of secondary result from last call
+          =0094                          39+pr_Result2  EQU     SOFFSET
+          >0098                          39+SOFFSET     SET     SOFFSET+4
+     40     BPTR    pr_CurrentDir       * Lock associated with current directory
+     40+         LONG     pr_CurrentDir
+          =0098                          40+pr_CurrentDir EQU   SOFFSET
+          >009C                          40+SOFFSET     SET     SOFFSET+4
+     41     BPTR    pr_CIS              * Current CLI Input Stream
+     41+         LONG     pr_CIS
+          =009C                          41+pr_CIS      EQU     SOFFSET
+          >00A0                          41+SOFFSET     SET     SOFFSET+4
+     42     BPTR    pr_COS              * Current CLI Output Stream
+     42+         LONG     pr_COS
+          =00A0                          42+pr_COS      EQU     SOFFSET
+          >00A4                          42+SOFFSET     SET     SOFFSET+4
+     43     APTR    pr_ConsoleTask      * Console handler process for current window
+          =00A4                          43+pr_ConsoleTask EQU  SOFFSET
+          >00A8                          43+SOFFSET     SET     SOFFSET+4
+     44     APTR    pr_FileSystemTask   * File handler process for current drive
+          =00A8                          44+pr_FileSystemTask EQU SOFFSET
+          >00AC                          44+SOFFSET     SET     SOFFSET+4
+     45     BPTR    pr_CLI              * pointer to ConsoleLineInterpreter
+     45+         LONG     pr_CLI
+          =00AC                          45+pr_CLI      EQU     SOFFSET
+          >00B0                          45+SOFFSET     SET     SOFFSET+4
+     46     APTR    pr_ReturnAddr       * pointer to previous stack frame
+          =00B0                          46+pr_ReturnAddr EQU   SOFFSET
+          >00B4                          46+SOFFSET     SET     SOFFSET+4
+     47     APTR    pr_PktWait          * Function to be called when awaiting msg
+          =00B4                          47+pr_PktWait  EQU     SOFFSET
+          >00B8                          47+SOFFSET     SET     SOFFSET+4
+     48     APTR    pr_WindowPtr        * Window pointer for errors
+          =00B8                          48+pr_WindowPtr EQU    SOFFSET
+          >00BC                          48+SOFFSET     SET     SOFFSET+4
+     49     LABEL   pr_SIZEOF       * Process
+          =00BC                          49+pr_SIZEOF   EQU     SOFFSET
+     50
+     51 * The long word address (BPTR) of this STRUCTure is returned by
+     52 * Open() and other routines that return a file.  You need only worry
+     53 * about this STRUCT to do async io's via PutMsg() instead of
+     54 * standard file system calls
+     55
+     56  STRUCTURE FileHandle,0
+          >0000                          56+FileHandle  SET     0         * for assembler's sake
+          >0000                          56+SOFFSET     SET     0
+     57    APTR   fh_Link            * pointer to EXEC message
+          =0000                          57+fh_Link     EQU     SOFFSET
+          >0004                          57+SOFFSET     SET     SOFFSET+4
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     58    APTR   fh_Interactive    * Boolean; TRUE if interactive handle
+          =0004                          58+fh_Interactive EQU  SOFFSET
+          >0008                          58+SOFFSET     SET     SOFFSET+4
+     59    APTR   fh_Type            * Port to do PutMsg() to
+          =0008                          59+fh_Type     EQU     SOFFSET
+          >000C                          59+SOFFSET     SET     SOFFSET+4
+     60    LONG   fh_Buf
+          =000C                          60+fh_Buf      EQU     SOFFSET
+          >0010                          60+SOFFSET     SET     SOFFSET+4
+     61    LONG   fh_Pos
+          =0010                          61+fh_Pos      EQU     SOFFSET
+          >0014                          61+SOFFSET     SET     SOFFSET+4
+     62    LONG   fh_End
+          =0014                          62+fh_End      EQU     SOFFSET
+          >0018                          62+SOFFSET     SET     SOFFSET+4
+     63    LONG   fh_Funcs
+          =0018                          63+fh_Funcs    EQU     SOFFSET
+          >001C                          63+SOFFSET     SET     SOFFSET+4
+          =0018                          64 fh_Func1 EQU fh_Funcs
+     65    LONG   fh_Func2
+          =001C                          65+fh_Func2    EQU     SOFFSET
+          >0020                          65+SOFFSET     SET     SOFFSET+4
+     66    LONG   fh_Func3
+          =0020                          66+fh_Func3    EQU     SOFFSET
+          >0024                          66+SOFFSET     SET     SOFFSET+4
+     67    LONG   fh_Args
+          =0024                          67+fh_Args     EQU     SOFFSET
+          >0028                          67+SOFFSET     SET     SOFFSET+4
+          =0024                          68 fh_Arg1 EQU fh_Args
+     69    LONG   fh_Arg2
+          =0028                          69+fh_Arg2     EQU     SOFFSET
+          >002C                          69+SOFFSET     SET     SOFFSET+4
+     70    LABEL  fh_SIZEOF * FileHandle
+          =002C                          70+fh_SIZEOF   EQU     SOFFSET
+     71
+     72 * This is the extension to EXEC Messages used by DOS
+     73  STRUCTURE DosPacket,0
+          >0000                          73+DosPacket   SET     0         * for assembler's sake
+          >0000                          73+SOFFSET     SET     0
+     74    APTR   dp_Link         * pointer to EXEC message
+          =0000                          74+dp_Link     EQU     SOFFSET
+          >0004                          74+SOFFSET     SET     SOFFSET+4
+     75    APTR   dp_Port         * pointer to Reply port for the packet
+          =0004                          75+dp_Port     EQU     SOFFSET
+          >0008                          75+SOFFSET     SET     SOFFSET+4
+     76 *                         * Must be filled in each send.
+     77    LONG   dp_Type         * See ACTION_... below and
+          =0008                          77+dp_Type     EQU     SOFFSET
+          >000C                          77+SOFFSET     SET     SOFFSET+4
+     78 *                         * 'R' means Read, 'W' means Write to the file system
+     79    LONG   dp_Res1         * For file system calls this is the result
+          =000C                          79+dp_Res1     EQU     SOFFSET
+          >0010                          79+SOFFSET     SET     SOFFSET+4
+     80 *                         * that would have been returned by the
+     81 *                         * function, e.g. Write ('W') returns actual
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     82 *                         * length written
+     83    LONG   dp_Res2         * For file system calls this is what would
+          =0010                          83+dp_Res2     EQU     SOFFSET
+          >0014                          83+SOFFSET     SET     SOFFSET+4
+     84 *                         * have been returned by IoErr()
+     85    LONG   dp_Arg1
+          =0014                          85+dp_Arg1     EQU     SOFFSET
+          >0018                          85+SOFFSET     SET     SOFFSET+4
+     86 *  Device packets common equivalents
+          =0008                          87 dp_Action  EQU  dp_Type
+          =000C                          88 dp_Status  EQU  dp_Res1
+          =0010                          89 dp_Status2 EQU  dp_Res2
+          =0014                          90 dp_BufAddr EQU  dp_Arg1
+     91    LONG   dp_Arg2
+          =0018                          91+dp_Arg2     EQU     SOFFSET
+          >001C                          91+SOFFSET     SET     SOFFSET+4
+     92    LONG   dp_Arg3
+          =001C                          92+dp_Arg3     EQU     SOFFSET
+          >0020                          92+SOFFSET     SET     SOFFSET+4
+     93    LONG   dp_Arg4
+          =0020                          93+dp_Arg4     EQU     SOFFSET
+          >0024                          93+SOFFSET     SET     SOFFSET+4
+     94    LONG   dp_Arg5
+          =0024                          94+dp_Arg5     EQU     SOFFSET
+          >0028                          94+SOFFSET     SET     SOFFSET+4
+     95    LONG   dp_Arg6
+          =0028                          95+dp_Arg6     EQU     SOFFSET
+          >002C                          95+SOFFSET     SET     SOFFSET+4
+     96    LONG   dp_Arg7
+          =002C                          96+dp_Arg7     EQU     SOFFSET
+          >0030                          96+SOFFSET     SET     SOFFSET+4
+     97    LABEL  dp_SIZEOF * DosPacket
+          =0030                          97+dp_SIZEOF   EQU     SOFFSET
+     98
+     99 * A Packet does not require the Message to before it in memory, but
+    100 * for convenience it is useful to associate the two.
+    101 * Also see the function init_std_pkt for initializing this STRUCTure
+    102
+    103  STRUCTURE StandardPacket,0
+          >0000                         103+StandardPacket SET  0         * for assembler's sake
+          >0000                         103+SOFFSET     SET     0
+    104    STRUCT sp_Msg,MN_SIZE
+          =0000                         104+sp_Msg      EQU     SOFFSET
+          >0014                         104+SOFFSET     SET     SOFFSET+MN_SIZE
+    105    STRUCT sp_Pkt,dp_SIZEOF
+          =0014                         105+sp_Pkt      EQU     SOFFSET
+          >0044                         105+SOFFSET     SET     SOFFSET+dp_SIZEOF
+    106    LABEL  sp_SIZEOF * StandardPacket
+          =0044                         106+sp_SIZEOF   EQU     SOFFSET
+    107
+    108
+    109 * Packet types
+          =0000                         110 ACTION_NIL              EQU   0
+          =0002                         111 ACTION_GET_BLOCK        EQU   2
+          =0004                         112 ACTION_SET_MAP          EQU   4
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          =0005                         113 ACTION_DIE              EQU   5
+          =0006                         114 ACTION_EVENT      EQU   6
+          =0007                         115 ACTION_CURRENT_VOLUME   EQU   7
+          =0008                         116 ACTION_LOCATE_OBJECT    EQU   8
+          =0009                         117 ACTION_RENAME_DISK      EQU   9
+          =0057                         118 ACTION_WRITE            EQU   'W'
+          =0052                         119 ACTION_READ             EQU   'R'
+          =000F                         120 ACTION_FREE_LOCK        EQU   15
+          =0010                         121 ACTION_DELETE_OBJECT    EQU   16
+          =0011                         122 ACTION_RENAME_OBJECT    EQU   17
+    123
+          =0013                         124 ACTION_COPY_DIR         EQU   19
+          =0014                         125 ACTION_WAIT_CHAR        EQU   20
+          =0015                         126 ACTION_SET_PROTECT      EQU   21
+          =0016                         127 ACTION_CREATE_DIR       EQU   22
+          =0017                         128 ACTION_EXAMINE_OBJECT   EQU   23
+          =0018                         129 ACTION_EXAMINE_NEXT     EQU   24
+          =0019                         130 ACTION_DISK_INFO        EQU   25
+          =001A                         131 ACTION_INFO          EQU   26
+    132
+          =001C                         133 ACTION_SET_COMMENT      EQU   28
+          =001D                         134 ACTION_PARENT           EQU   29
+          =001E                         135 ACTION_TIMER            EQU   30
+          =001F                         136 ACTION_INHIBIT          EQU   31
+          =0020                         137 ACTION_DISK_TYPE        EQU   32
+          =0021                         138 ACTION_DISK_CHANGE      EQU   33
+    139
+    140
+    141 * DOS library node structure.
+    142 * This is the data at positive offsets from the library node.
+    143 * Negative offsets from the node is the jump table to DOS functions
+    144 * node = (STRUCT DosLibrary *) OpenLibrary( "dos.library" .. )
+    145
+    146  STRUCTURE DosLibrary,0
+          >0000                         146+DosLibrary  SET     0         * for assembler's sake
+          >0000                         146+SOFFSET     SET     0
+    147     STRUCT  dl_lib,LIB_SIZE
+          =0000                         147+dl_lib      EQU     SOFFSET
+          >0022                         147+SOFFSET     SET     SOFFSET+LIB_SIZE
+    148     APTR    dl_Root          * Pointer to RootNode, described below
+          =0022                         148+dl_Root     EQU     SOFFSET
+          >0026                         148+SOFFSET     SET     SOFFSET+4
+    149     APTR    dl_GV            * Pointer to BCPL global vector
+          =0026                         149+dl_GV       EQU     SOFFSET
+          >002A                         149+SOFFSET     SET     SOFFSET+4
+    150     LONG    dl_A2            * Private register dump of DOS
+          =002A                         150+dl_A2       EQU     SOFFSET
+          >002E                         150+SOFFSET     SET     SOFFSET+4
+    151     LONG    dl_A5
+          =002E                         151+dl_A5       EQU     SOFFSET
+          >0032                         151+SOFFSET     SET     SOFFSET+4
+    152     LONG    dl_A6
+          =0032                         152+dl_A6       EQU     SOFFSET
+          >0036                         152+SOFFSET     SET     SOFFSET+4
+    153     LABEL   dl_SIZEOF *  DosLibrary
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          =0036                         153+dl_SIZEOF   EQU     SOFFSET
+    154
+    155 *
+    156
+    157  STRUCTURE RootNode,0
+          >0000                         157+RootNode    SET     0         * for assembler's sake
+          >0000                         157+SOFFSET     SET     0
+    158     BPTR    rn_TaskArray       * [0] is max number of CLI's
+    158+         LONG     rn_TaskArray
+          =0000                         158+rn_TaskArray EQU    SOFFSET
+          >0004                         158+SOFFSET     SET     SOFFSET+4
+    159 *                              * [1] is APTR to process id of CLI 1
+    160 *                              * [n] is APTR to process id of CLI n
+    161     BPTR    rn_ConsoleSegment  * SegList for the CLI
+    161+         LONG     rn_ConsoleSegment
+          =0004                         161+rn_ConsoleSegment EQU SOFFSET
+          >0008                         161+SOFFSET     SET     SOFFSET+4
+    162     STRUCT  rn_Time,ds_SIZEOF  * Current time
+          =0008                         162+rn_Time     EQU     SOFFSET
+          >0014                         162+SOFFSET     SET     SOFFSET+ds_SIZEOF
+    163     LONG    rn_RestartSeg      * SegList for the disk validator process
+          =0014                         163+rn_RestartSeg EQU   SOFFSET
+          >0018                         163+SOFFSET     SET     SOFFSET+4
+    164     BPTR    rn_Info            * Pointer ot the Info structure
+    164+         LONG     rn_Info
+          =0018                         164+rn_Info     EQU     SOFFSET
+          >001C                         164+SOFFSET     SET     SOFFSET+4
+    165     LABEL   rn_SIZEOF * RootNode
+          =001C                         165+rn_SIZEOF   EQU     SOFFSET
+    166
+    167  STRUCTURE DosInfo,0
+          >0000                         167+DosInfo     SET     0         * for assembler's sake
+          >0000                         167+SOFFSET     SET     0
+    168     BPTR    di_McName          * Network name of this machine currently 0
+    168+         LONG     di_McName
+          =0000                         168+di_McName   EQU     SOFFSET
+          >0004                         168+SOFFSET     SET     SOFFSET+4
+    169     BPTR    di_DevInfo         * Device List
+    169+         LONG     di_DevInfo
+          =0004                         169+di_DevInfo  EQU     SOFFSET
+          >0008                         169+SOFFSET     SET     SOFFSET+4
+    170     BPTR    di_Devices         * Currently zero
+    170+         LONG     di_Devices
+          =0008                         170+di_Devices  EQU     SOFFSET
+          >000C                         170+SOFFSET     SET     SOFFSET+4
+    171     BPTR    di_Handlers        * Currently zero
+    171+         LONG     di_Handlers
+          =000C                         171+di_Handlers EQU     SOFFSET
+          >0010                         171+SOFFSET     SET     SOFFSET+4
+    172     APTR    di_NetHand         * Network handler processid currently zero
+          =0010                         172+di_NetHand  EQU     SOFFSET
+          >0014                         172+SOFFSET     SET     SOFFSET+4
+    173     LABEL   di_SIZEOF * DosInfo
+          =0014                         173+di_SIZEOF   EQU     SOFFSET
+    174
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+    175 * DOS Processes started from the CLI via RUN or NEWCLI have this additional
+    176 * set to data associated with them
+    177
+    178  STRUCTURE CommandLineInterface,0
+          >0000                         178+CommandLineInterface SET 0    * for assembler's sake
+          >0000                         178+SOFFSET     SET     0
+    179     LONG   cli_Result2         * Value of IoErr from last command
+          =0000                         179+cli_Result2 EQU     SOFFSET
+          >0004                         179+SOFFSET     SET     SOFFSET+4
+    180     BSTR   cli_SetName         * Name of current directory
+    180+         LONG     cli_SetName
+          =0004                         180+cli_SetName EQU     SOFFSET
+          >0008                         180+SOFFSET     SET     SOFFSET+4
+    181     BPTR   cli_CommandDir      * Lock associated with command directory
+    181+         LONG     cli_CommandDir
+          =0008                         181+cli_CommandDir EQU  SOFFSET
+          >000C                         181+SOFFSET     SET     SOFFSET+4
+    182     LONG   cli_ReturnCode      * Return code from last command
+          =000C                         182+cli_ReturnCode EQU  SOFFSET
+          >0010                         182+SOFFSET     SET     SOFFSET+4
+    183     BSTR   cli_CommandName     * Name of current command
+    183+         LONG     cli_CommandName
+          =0010                         183+cli_CommandName EQU SOFFSET
+          >0014                         183+SOFFSET     SET     SOFFSET+4
+    184     LONG   cli_FailLevel       * Fail level (set by FAILAT)
+          =0014                         184+cli_FailLevel EQU   SOFFSET
+          >0018                         184+SOFFSET     SET     SOFFSET+4
+    185     BSTR   cli_Prompt          * Current prompt (set by PROMPT)
+    185+         LONG     cli_Prompt
+          =0018                         185+cli_Prompt  EQU     SOFFSET
+          >001C                         185+SOFFSET     SET     SOFFSET+4
+    186     BPTR   cli_StandardInput   * Default (terminal) CLI input
+    186+         LONG     cli_StandardInput
+          =001C                         186+cli_StandardInput EQU SOFFSET
+          >0020                         186+SOFFSET     SET     SOFFSET+4
+    187     BPTR   cli_CurrentInput    * Current CLI input
+    187+         LONG     cli_CurrentInput
+          =0020                         187+cli_CurrentInput EQU SOFFSET
+          >0024                         187+SOFFSET     SET     SOFFSET+4
+    188     BSTR   cli_CommandFile     * Name of EXECUTE command file
+    188+         LONG     cli_CommandFile
+          =0024                         188+cli_CommandFile EQU SOFFSET
+          >0028                         188+SOFFSET     SET     SOFFSET+4
+    189     LONG   cli_Interactive     * Boolean True if prompts required
+          =0028                         189+cli_Interactive EQU SOFFSET
+          >002C                         189+SOFFSET     SET     SOFFSET+4
+    190     LONG   cli_Background      * Boolean True if CLI created by RUN
+          =002C                         190+cli_Background EQU  SOFFSET
+          >0030                         190+SOFFSET     SET     SOFFSET+4
+    191     BPTR   cli_CurrentOutput   * Current CLI output
+    191+         LONG     cli_CurrentOutput
+          =0030                         191+cli_CurrentOutput EQU SOFFSET
+          >0034                         191+SOFFSET     SET     SOFFSET+4
+    192     LONG   cli_DefaultStack    * Stack size to be obtained in long words
+          =0034                         192+cli_DefaultStack EQU SOFFSET
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          >0038                         192+SOFFSET     SET     SOFFSET+4
+    193     BPTR   cli_StandardOutput  * Default (terminal) CLI output
+    193+         LONG     cli_StandardOutput
+          =0038                         193+cli_StandardOutput EQU SOFFSET
+          >003C                         193+SOFFSET     SET     SOFFSET+4
+    194     BPTR   cli_Module          * SegList of currently loaded command
+    194+         LONG     cli_Module
+          =003C                         194+cli_Module  EQU     SOFFSET
+          >0040                         194+SOFFSET     SET     SOFFSET+4
+    195     LABEL  cli_SIZEOF  * CommandLineInterface
+          =0040                         195+cli_SIZEOF  EQU     SOFFSET
+    196
+    197
+    198 *
+    199 * this structure needs some work.  It should really be a union, because
+    200 * it can take on different valued depending on whether it is a device,
+    201 * an assigned directory, or a volume.
+    202 * For now, it reflects a volume.
+    203 *
+    204  STRUCTURE DevList,0
+          >0000                         204+DevList     SET     0         * for assembler's sake
+          >0000                         204+SOFFSET     SET     0
+    205     BPTR   dl_Next         ; bptr to next device list
+    205+         LONG     dl_Next
+          =0000                         205+dl_Next     EQU     SOFFSET
+          >0004                         205+SOFFSET     SET     SOFFSET+4
+    206     LONG   dl_Type         ; see DLT below
+          =0004                         206+dl_Type     EQU     SOFFSET
+          >0008                         206+SOFFSET     SET     SOFFSET+4
+    207     APTR   dl_Task         ; ptr to handler task
+          =0008                         207+dl_Task     EQU     SOFFSET
+          >000C                         207+SOFFSET     SET     SOFFSET+4
+    208     BPTR   dl_Lock         ; not for volumes
+    208+         LONG     dl_Lock
+          =000C                         208+dl_Lock     EQU     SOFFSET
+          >0010                         208+SOFFSET     SET     SOFFSET+4
+    209     STRUCT   dl_VolumeDate,ds_SIZEOF   ; creation date
+          =0010                         209+dl_VolumeDate EQU   SOFFSET
+          >001C                         209+SOFFSET     SET     SOFFSET+ds_SIZEOF
+    210     BPTR   dl_LockList      ; outstanding locks
+    210+         LONG     dl_LockList
+          =001C                         210+dl_LockList EQU     SOFFSET
+          >0020                         210+SOFFSET     SET     SOFFSET+4
+    211     LONG   dl_DiskType      ; 'DOS', etc
+          =0020                         211+dl_DiskType EQU     SOFFSET
+          >0024                         211+SOFFSET     SET     SOFFSET+4
+    212     LONG   dl_unused
+          =0024                         212+dl_unused   EQU     SOFFSET
+          >0028                         212+SOFFSET     SET     SOFFSET+4
+    213     BSTR   dl_Name         ; bptr to bcpl name
+    213+         LONG     dl_Name
+          =0028                         213+dl_Name     EQU     SOFFSET
+          >002C                         213+SOFFSET     SET     SOFFSET+4
+    214     LABEL   DevList_SIZEOF
+          =002C                         214+DevList_SIZEOF EQU  SOFFSET
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+    215
+    216 * definitions for dl_Type
+          =0000                         217 DLT_DEVICE   EQU   0
+          =0001                         218 DLT_DIRECTORY   EQU   1
+          =0002                         219 DLT_VOLUME   EQU   2
+    220
+    221
+    222 * a lock structure, as returned by Lock() or DupLock()
+    223  STRUCTURE FileLock,0
+          >0000                         223+FileLock    SET     0         * for assembler's sake
+          >0000                         223+SOFFSET     SET     0
+    224     BPTR   fl_Link         ; bcpl pointer to next lock
+    224+         LONG     fl_Link
+          =0000                         224+fl_Link     EQU     SOFFSET
+          >0004                         224+SOFFSET     SET     SOFFSET+4
+    225     LONG   fl_Key         ; disk block number
+          =0004                         225+fl_Key      EQU     SOFFSET
+          >0008                         225+SOFFSET     SET     SOFFSET+4
+    226     LONG   fl_Access      ; exclusive or shared
+          =0008                         226+fl_Access   EQU     SOFFSET
+          >000C                         226+SOFFSET     SET     SOFFSET+4
+    227     APTR   fl_Task         ; handler task's port
+          =000C                         227+fl_Task     EQU     SOFFSET
+          >0010                         227+SOFFSET     SET     SOFFSET+4
+    228     BPTR   fl_Volume      ; bptr to a DeviceList
+    228+         LONG     fl_Volume
+          =0010                         228+fl_Volume   EQU     SOFFSET
+          >0014                         228+SOFFSET     SET     SOFFSET+4
+    229     LABEL   fl_SIZEOF
+          =0014                         229+fl_SIZEOF   EQU     SOFFSET
+    230
+    231    ENDC
+     17
+     18         include "asmsupp.i"
+      1 *
+      2 * asmsupp.i -- random low level assembly support routines
+      3 *
+      4 * Source Control
+      5 * ------ -------
+      6 *
+      7
+      8
+      9 CLEAR    MACRO             ;quick way to clear a D register on 68000
+     10          MOVEQ    #0,\1
+     11          ENDM
+     12
+     13 BHS      MACRO
+     14          BCC.\0   \1
+     15          ENDM
+     16
+     17 BLO      MACRO
+     18          BCS.\0   \1
+     19          ENDM
+     20
+     21 EVEN     MACRO             ;word align code stream
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     22          DS.W     0
+     23          ENDM
+     24
+     25 LINKSYS  MACRO             ;link to a library without having to see a _LVO
+     26          LINKLIB  _LVO\1,\2
+     27          ENDM
+     28
+     29 CALLSYS  MACRO             ;call a library without having to see _LVO
+     30          CALLLIB  _LVO\1
+     31          ENDM
+     32
+     33 XLIB     MACRO             ;define a library reference without the _LVO
+     34          XREF     _LVO\1
+     35          ENDM
+     36
+0000'37          section section
+          =0001                          38 DEBUG    equ      1
+     19
+     20         include "mydev.i"
+      1 *
+      2 * mydev.i -- external declarations for skeleton device
+      3 *
+      4 * Source Control
+      5 * ------ -------
+      6 *
+      7
+      8 ;---------------------------------------------------------------------
+      9 ;
+     10 ;  device command definitions
+     11 ;
+     12 ;---------------------------------------------------------------------
+     13
+     14       DEVINIT
+           True                          14+            IFC       '',''
+          >0009                          14+CMD_COUNT   SET     CMD_NONSTD
+     14+            ENDC
+           False                         14+       IFNC    '',''
+     14+CMD_COUNT   SET
+     14+            ENDC
+     15       DEVCMD   MYDEV_FOO
+          =0009                          15+MYDEV_FOO EQU      CMD_COUNT
+          >000A                          15+CMD_COUNT   SET       CMD_COUNT+1
+     16       DEVCMD   MYDEV_BAR
+          =000A                          16+MYDEV_BAR EQU      CMD_COUNT
+          >000B                          16+CMD_COUNT   SET       CMD_COUNT+1
+     17       DEVCMD   MYDEV_END      ; place marker -- first illegal command #
+          =000B                          17+MYDEV_END EQU      CMD_COUNT
+          >000C                          17+CMD_COUNT   SET       CMD_COUNT+1
+     18
+     19 ;---------------------------------------------------------------------
+     20 ;
+     21 ;  device data structures
+     22 ;
+     23 ;---------------------------------------------------------------------
+     24
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+     25 ; maximum number of units in this device
+          =0004                          26 MD_NUMUNITS    EQU      4
+     27
+     28    STRUCTURE   MyDev,LIB_SIZE
+          >0000                          28+MyDev       SET     0         * for assembler's sake
+          >0022                          28+SOFFSET     SET     LIB_SIZE
+     29       ULONG       md_SysLib
+          =0022                          29+md_SysLib   EQU     SOFFSET
+          >0026                          29+SOFFSET     SET     SOFFSET+4
+     30       ULONG       md_DosLib
+          =0026                          30+md_DosLib   EQU     SOFFSET
+          >002A                          30+SOFFSET     SET     SOFFSET+4
+     31       ULONG       md_SegList
+          =002A                          31+md_SegList  EQU     SOFFSET
+          >002E                          31+SOFFSET     SET     SOFFSET+4
+     32       UBYTE       md_Flags
+          =002E                          32+md_Flags    EQU     SOFFSET
+          >002F                          32+SOFFSET     SET     SOFFSET+1
+     33       UBYTE       md_pad
+          =002F                          33+md_pad      EQU     SOFFSET
+          >0030                          33+SOFFSET     SET     SOFFSET+1
+     34       STRUCT      md_Units,MD_NUMUNITS*4
+          =0030                          34+md_Units    EQU     SOFFSET
+          >0040                          34+SOFFSET     SET     SOFFSET+MD_NUMUNITS*4
+     35       LABEL       MyDev_Sizeof
+          =0040                          35+MyDev_Sizeof EQU    SOFFSET
+     36
+     37    STRUCTURE   MyDevMsg,MN_SIZE
+          >0000                          37+MyDevMsg    SET     0         * for assembler's sake
+          >0014                          37+SOFFSET     SET     MN_SIZE
+     38       APTR        mdm_Device
+          =0014                          38+mdm_Device  EQU     SOFFSET
+          >0018                          38+SOFFSET     SET     SOFFSET+4
+     39       APTR        mdm_Unit
+          =0018                          39+mdm_Unit    EQU     SOFFSET
+          >001C                          39+SOFFSET     SET     SOFFSET+4
+     40       LABEL       MyDevMsg_Sizeof
+          =001C                          40+MyDevMsg_Sizeof EQU SOFFSET
+     41
+     42    STRUCTURE   MyDevUnit,UNIT_SIZE
+          >0000                          42+MyDevUnit   SET     0         * for assembler's sake
+          >0026                          42+SOFFSET     SET     UNIT_SIZE
+     43       UBYTE       mdu_UnitNum
+          =0026                          43+mdu_UnitNum EQU     SOFFSET
+          >0027                          43+SOFFSET     SET     SOFFSET+1
+     44       UBYTE       mdm_pad
+          =0027                          44+mdm_pad     EQU     SOFFSET
+          >0028                          44+SOFFSET     SET     SOFFSET+1
+     45       STRUCT      mdu_Msg,MyDevMsg_Sizeof
+          =0028                          45+mdu_Msg     EQU     SOFFSET
+          >0044                          45+SOFFSET     SET     SOFFSET+MyDevMsg_Sizeof
+     46       APTR        mdu_Process
+          =0044                          46+mdu_Process EQU     SOFFSET
+          >0048                          46+SOFFSET     SET     SOFFSET+4
+     47       LABEL       MyDevUnit_Sizeof
+MC68000 ASSEMBLER VERSION 10.178                           
+
+   LOC              OBJECT             STMT            SOURCE STATEMENT
+
+
+          =0048                          47+MyDevUnit_Sizeof EQU SOFFSET
+     48
+     49       ;---------- state bit for unit stopped
+     50       BITDEF      MDU,STOPPED,2
+     50+            BITDEF0 MDU,STOPPED,B_,2
+          =0002                          50+MDUB_STOPPED EQU    2
+          >0004                          50+.032BITDEF  SET     1<<2
+     50+            BITDEF0 MDU,STOPPED,F_,.032BITDEF
+          =0004                          50+MDUF_STOPPED EQU    .032BITDEF
+     51
+     52 ; stack size and priority for the process we will create
+          =0200                          53 MYPROCSTACKSIZE   EQU      $200
+          =0000                          54 MYPROCPRI         EQU      0
+     55
+     56 MYDEVNAME         MACRO
+     57                   DC.B     'mydev.device',0
+     58                   ENDM
+     21
+"include.asm", line 22: Warning 4: 'END' statement missing
+
+0000'                              E     22
+
+
+
+No errors found in this Assembly

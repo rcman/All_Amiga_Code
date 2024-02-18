@@ -1,0 +1,55 @@
+[4;1mmain                    07-Feb-92 09:08:00  Hunk Section                Page 1-1[0m
+
+[4m num[0m [4mhunk    [0m [4m    size[0m [4mfilename        [0m [4mpunit   [0m [4mtype    [0m [4m    base[0m [4m alv[0m
+   0 text         1088 SYS:lc/lib/c.o   c        code            0    0
+                       main.o           main.c   code          1ac    0
+                       SYS:lc/lib/lc.li fpinit.c code          1c0    0
+                       SYS:lc/lib/lc.li write.c  code          1c4    1
+                       SYS:lc/lib/lc.li uwrites. code          22c    1
+                       SYS:lc/lib/lc.li uufbs.c  code          298    0
+                       SYS:lc/lib/lc.li upool.c  code          298    0
+                       SYS:lc/lib/lc.li umain.c  code          298    5
+                       SYS:lc/lib/lc.li uiob.c   code          4a8    0
+                       SYS:lc/lib/lc.li ugetbf.c code          4a8    2
+                       SYS:lc/lib/lc.li ufmode.c code          508    0
+                       SYS:lc/lib/lc.li uflsbf.c code          508    0
+                       SYS:lc/lib/lc.li uexit.c  code          7a4    1
+                       SYS:lc/lib/lc.li ucxovf   code          7fc    1
+                       SYS:lc/lib/lc.li strncat. code          818    0
+                       SYS:lc/lib/lc.li rlsml.c  code          870    1
+                       SYS:lc/lib/lc.li read.c   code          968    0
+                       SYS:lc/lib/lc.li memclean code          9b0    0
+                       SYS:lc/lib/lc.li lseek.c  code          9e0    1
+                       SYS:lc/lib/lc.li lsbrk.c  code          a30    2
+                       SYS:lc/lib/lc.li getml.c  code          aa0    1
+                       SYS:lc/lib/lc.li getmem.c code          b64    0
+                       SYS:lc/lib/lc.li exit.c   code          b78    0
+                       SYS:lc/lib/lc.li error.c  code          bcc    0
+                       SYS:lc/lib/lc.li dwrite.c code          bcc    0
+                       SYS:lc/lib/lc.li dseek.c  code          c18    0
+                       SYS:lc/lib/lc.li dread.c  code          c94    0
+                       SYS:lc/lib/lc.li dclose.c code          ce0    0
+                       SYS:lc/lib/lc.li cxovf.c  code          d00    2
+                       SYS:lc/lib/lc.li cxm33    code          db4    0
+                       SYS:lc/lib/lc.li cxd33    code          dd4    0
+                       SYS:lc/lib/lc.li cxbrk.c  code          e98    0
+                       SYS:lc/lib/lc.li chkufb.c code          fc4    0
+                       SYS:lc/lib/lc.li chkabort code         1004    0
+                       SYS:lc/lib/lc.li bufsiz.c code         1054    0
+                       SYS:lc/lib/lc.li autoreq  code         1054    0
+   1 __MERGED      120 main.o           main.c   data            0    0
+                       SYS:lc/lib/lc.li uufbs.c  data            8    0
+                       SYS:lc/lib/lc.li upool.c  data            c    0
+                       SYS:lc/lib/lc.li uiob.c   data           20    0
+                       SYS:lc/lib/lc.li ufmode.c data           88    0
+                       SYS:lc/lib/lc.li mstep    data           8c    0
+                       SYS:lc/lib/lc.li cxovf.c  data           90    0
+                       SYS:lc/lib/lc.li cxbrk.c  data           cc    0
+                       SYS:lc/lib/lc.li bufsiz.c data          11c    0
+                       SYS:lc/lib/c.o   c        bss           120    0
+                       SYS:lc/lib/lc.li uufbs.c  bss           16c    0
+                       SYS:lc/lib/lc.li umain.c  bss           2ac    0
+                       SYS:lc/lib/lc.li memclean bss           370    0
+                       SYS:lc/lib/lc.li intubase bss           37c    0
+                       SYS:lc/lib/lc.li error.c  bss           380    0
+                       SYS:lc/lib/lc.li dosbase  bss           384    0
