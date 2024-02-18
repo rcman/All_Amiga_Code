@@ -23,7 +23,7 @@ FindPort	equ	-390
 ;	jsr	FindTask(a6)
 ;	move.l	d0,thistask
 
-	lea	MyPort(pc),a1
+;	lea	MyPort(pc),a1
 ;	move.l	a1,$68000
 
 ;	move.l	sysbase,a6
@@ -36,10 +36,14 @@ FindPort	equ	-390
 	move.l	d0,a0
 	beq.s	endpgm
 
-	move.l	#'OKAY',$68010
+;	move.l	#'OKAY',$68010
 ;	lea	Mes(pc),a1
 	move.l	sysbase,a6
 	jsr	GetMsg(a6)
+
+	nop
+	nop
+
 
 	move.l	d0,$68100		;pointer to the Message
 
@@ -56,40 +60,41 @@ endpgm:
 portname:	dc.b	'SeanPort',0
 		cnop	0,2
 
-MyPort:		dc.l	0
-		dc.l	0
-		dc.b	4		;mesgport
-		dc.b	0		;priority
-		dc.l	portname
+;MyPort:		dc.l	0
+;		dc.l	0
+;		dc.b	4		;mesgport
+;		dc.b	0		;priority
+;		dc.l	portname
 
-flags:		dc.b	0		;mpflags
-signal:		dc.b	0		;mpsigbit
-thistask:	dc.l	0		;Pointer to this task
+;flags:		dc.b	0		;mpflags
+;signal:		dc.b	0		;mpsigbit
+;thistask:	dc.l	0		;Pointer to this task
 
-		dc.l	0		;lh_head
-		dc.l	0		;lh_tail
-		dc.l	0		;lh_tailpred
-		dc.b	0		;type
-		dc.b	0		;pad
-
-
-		dc.l	0,0,0,0,0
-
-lames:
-		dc.b	'Hello Message',0
-		cnop	0,2
-
-Mes:		dc.l	0
-		dc.l	0
-		dc.b	5		;message
-		dc.b	0		;priority
-		dc.l	lames
-
-		dc.l	0
-
-		dc.w	100		;length of message
-
-		dc.b	'Cows fly North for winter',0
-		cnop	0,2
+;		dc.l	0		;lh_head
+;		dc.l	0		;lh_tail
+;		dc.l	0		;lh_tailpred
+;		dc.b	0		;type
+;		dc.b	0		;pad
 
 
+;		dc.l	0,0,0,0,0
+
+;lames:
+;		dc.b	'Hello Message',0
+;		cnop	0,2
+
+;Mes:		dc.l	0
+;		dc.l	0
+;		dc.b	5		;message
+;		dc.b	0		;priority
+;		dc.l	lames
+
+;		dc.l	0
+
+;		dc.w	100		;length of message
+
+;		dc.b	'Cows fly North for winter',0
+;		cnop	0,2
+
+
+		end
