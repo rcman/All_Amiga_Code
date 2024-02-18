@@ -1,0 +1,14 @@
+loadfail.b = false
+For x=0 To 3
+	If image_load{x,"images/frame_"+Str$(x)+".iff"} 
+	else loadfail = true
+	endif
+Next
+if loadfail = false
+	Repeat
+		For x=0 To 3
+			image_Blit{x, 360, 315}
+			Delay_ 10
+		Next
+	Until MButtons = 1
+EndIf
