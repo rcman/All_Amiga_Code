@@ -1,0 +1,7 @@
+
+NET:       Stacksize = 8000
+           Priority = 5
+           GlobVec = -1
+           Unit    =  0
+           Handler = l:netdnet-handler
+#

@@ -1,0 +1,7 @@
+
+8192  sys:dnet/scopy   ram:    ;File Transfer server
+8195	sys:dnet/sterm   ram:    ;Terminal Window server
+8196	sys:dnet/scli    ram:    ;Shell Server (needs pipe:)
+8197	sys:dnet/sloadav ram:    ;Load Average Server
+9492  sys:dnet/netdnet-server   ram:    ;File-handler Server
+

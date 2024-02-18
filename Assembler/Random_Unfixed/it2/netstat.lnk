@@ -1,0 +1,5 @@
+FROM LIB:c.o+"netstat.o"
+TO "netstat"
+LIB LIB:lc.lib LIB:amiga.lib
+BATCH
+

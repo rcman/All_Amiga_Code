@@ -1,0 +1,180 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
+* |_o_o|\\ Copyright (c) 1989 The Software Distillery.                    *
+* |. o.| ||          All Rights Reserved                                  *
+* | .  | ||          Written by John Toebes and Doug Walker               *
+* | o  | ||          The Software Distillery                              *
+* |  . |//           235 Trillingham Lane                                 *
+* ======             Cary, NC 27513                                       *
+*                    BBS:(919)-471-6436                                   *
+\* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+This material is Copyright (C) 1988 and 1989 The Software Distillery.
+It may be distributed freely as long as the following restrictions are met:
+
+   1.  All files present in the distribution package must be redistributed
+       with the package, including this documentation file.  If you 
+       distribute on diskette, all files must be on a single diskette.
+       A list of files in this distribution is at the end of this file.
+
+   2.  The distributor may charge a fee to recover distribution costs.
+       The fee for diskette distribution should not be more than the cost 
+       to obtain the same diskette from Fred Fish or The Software Distillery,
+       whichever is greater.  Current charge from The Software Distillery
+       is $6 per disk in the United States and Canada, $7 outside, including 
+       all postage and handling charges.
+
+   3.  The distributor agrees to cease distributing the programs and data
+       involved if requested to do so by authors or any member of The 
+       Software Distillery.
+
+------------------------------DISCLAIMER
+
+Neither The Software Distillery nor any of its members will be liable for 
+any damage arising from the failure of this program to perform as described,
+or any destruction of other programs or data residing on a system 
+attempting to run the program.  While we know of no damaging errors, the 
+user of this program uses it at his or her own risk.
+
+-----------------------------FUNCTIONALITY 
+
+The network handler in this distribution relies on DNET for communication,
+but all dependencies on DNET are isolated.  The intent is for a future 
+release to support ANY COMMUNICATIONS METHOD, including serial, parallel,
+AppleTalk, DecNET, NFS, you name it, all simultaneously via external 
+communications servers.
+
+
+============================================================================
+
+RUNNING THE NETWORK HANDLER:
+
+These instructions talk about a 'local' machine and a 'remote' machine.
+The network is symmetric, so for DNET at least, you can do the 
+installation on both sides.  Just install all files on both machines,
+and perform all commands on both machines.
+
+1. Install DNET on both machines.  Add an entry to the dnet.servers 
+   file on the remote machine for the network server.  A sample 
+   dnet.servers file is included in this distribution in the file 
+   "dnet.servers".  Note the server number for the network is 9492.  You 
+   will need to change the pathname specified in the sample dnet.servers 
+   file to reflect the path you intend to use.
+
+2. Copy netdnet-server to the path specified in the dnet.servers file on
+   the remote machine.
+
+3. Put a mountlist entry for the network handler in the local machine's
+   DEVS:MOUNTLIST.  A sample mountlist entry is included in this 
+   distribution in the file "mountlist".  If you do not want the network 
+   handler in l:, replace the specified path with one of your own.
+
+4. Copy netdnet-handler to the path specified in the mountlist on the 
+   local machine.
+
+5. Issue the CLI command "ASSIGN ROOT: <path>" on the remote machine.  The
+   network handler mounts the ROOT: device on the remote node as a network
+   node on the local node;  the place you point ROOT: to is where your
+   files will go.
+
+6. Copy the file NODE.INFO from the distribution disk to ROOT:.  This file 
+   contains the .info information for the remote node that will be 
+   displayed on the workbench screen of the local node.  Feel free to 
+   replace it with any DRAWER type .info file.
+
+7. Issue the CLI command "MOUNT NET:" on the local node.  The first 
+   reference to NET: after the MOUNT command will load the handler.  DNET
+   will load the server on the remote node automatically.
+
+8. If you want a two-way network, repeat steps 1-7, but this time switch
+   your idea of which node is 'local' and which is 'remote'.
+
+============================================================================
+
+Once the NET: device is running, you can use the provided NETMOUNT command
+to allow access to other devices besides ROOT: on the remote machine.
+NETMOUNT is a temporary stopgap until a real ROOT: device is implemented
+that allows access to all devices on a machine via a single handler.
+
+For now, the NETMOUNT command format is
+
+NETMOUNT <local device> <node name> <remote device>
+
+where <local device>  is the name you MOUNTed (usually NET:)
+      <node name>     is the name you want to refer to the new entry as
+      <remote device> is the name of the device on the remote node to use
+      
+For example, 
+
+NETMOUNT NET: DF0 DF0:
+
+would allow you to access the floppy on the remote node by using the path
+NET:DF0.  Thus, 
+
+DIR NET:DF0
+
+would produce the same results as doing a DIR DF0: on the remote machine.
+
+============================================================================
+
+The provided NETSTAT command gives you a visual idea of how much work your
+network is doing.  Run it with the command
+
+RUN NETSTAT <devicename>
+
+where <devicename> is the name of your network device (probably NET:).
+Click on the close gadget in the upper left corner to exit.
+
+============================================================================
+
+Differences and enhancements:
+
+VERSION 05/09/89:
+  First version released
+
+VERSION 07/18/89:
+
+- Speed improved due to decreasing minimum packet size
+  Should help when loading executables over the network and when doing
+  directory operations.
+
+- Debugging code removed
+  This makes the code smaller and faster
+
+- Bug fixed in the ACTION_CREATE_DIR packet
+
+============================================================================
+
+CONTENTS:  This distribution should contain the following files:
+           
+     server (dir)
+       device.c                         dir.c
+       dispatch.c                       file.c
+       io.c                             lock.c
+       main.c                           makefile
+       netdnet-server                   netdnet.c
+       server.h                         struct.h
+       volume.c                         
+     handler (dir)
+       device.c                         devio.c
+       dir.c                            file.c
+       handler.h                        io.c
+       lock.c                           main.c
+       makefile                         mount.c
+       netdnet-handler                  netdnet.c
+       process.c                        volume.c
+     doc (dir)
+       dnet.servers                     mountlist
+       netsource.doc                    README
+     util (dir)
+       handd                            handd.c
+       netmount                         netmount.c
+       netstat                          netstat.c
+       netstat.h                        netstat.lnk
+       shutdown                         shutdown.c
+  channel.h                        debug.c
+  dnet.h                           dnetlib.c
+  iodnet.c                         netcomm.h
+  netdev.h                         netdnet.h
+  proto.h                          request.c
+  sendpkt.c                        subs.c
+  timer.c                          

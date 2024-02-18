@@ -1,0 +1,141 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
+* |_o_o|\\ Copyright (c) 1989 The Software Distillery.                    *
+* |. o.| ||          All Rights Reserved                                  *
+* | .  | ||          Written by John Toebes and Doug Walker               *
+* | o  | ||          The Software Distillery                              *
+* |  . |//           235 Trillingham Lane                                 *
+* ======             Cary, NC 27513                                       *
+*                    BBS:(919)-471-6436                                   *
+\* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+SOFTWARE DISTILLERY NETWORK FILE SYSTEM, VERSION 1.0
+
+This material is Copyright (C) 1988 and 1989 The Software Distillery.
+
+------------------------------DISCLAIMER
+
+Neither The Software Distillery nor any of its members will be liable for 
+any damage arising from the failure of this program to perform as described,
+or any destruction of other programs or data residing on a system 
+attempting to run the program.  While we know of no damaging errors, the 
+user of this program uses it at his or her own risk.
+
+-----------------------------FUNCTIONALITY 
+
+The network handler in this distribution relies on DNET for communication,
+but all dependancies on DNET are isolated.  The intent is for a future 
+release to support ANY COMMUNICATIONS METHOD, including serial, parallel,
+AppleTalk, DecNET, NFS, you name it, all simultaneously via external 
+communications servers.  
+
+============================================================================
+
+SETTING UP THE SOURCE DIRECTORY
+
+If you received this software as a ZOO archive, you should use the
+x// option to de-archive it into its original directory structure.
+If you didn't, delete the files produced and start over with
+
+   ZOO x// netsrc1.zoo
+
+You should de-zoo the archive into its own directory, since there are
+many files in the root of the directory structure.
+
+============================================================================
+
+RUNNING THE NETWORK HANDLER:
+
+These instructions talk about a 'local' machine and a 'remote' machine.
+The network is symmetrical, so for DNET at least, you can do the 
+installation on both sides.  Just install all files on both machines,
+and perform all commands on both machines.
+
+1. Install DNET on both machines.  Add an entry to the dnet.servers 
+   file on the remote machine for the network server.  A sample 
+   dnet.servers file is included in this distribution in the file 
+   "dnet.servers".  Note the server number for the network is 9492.  You 
+   will need to change the pathname specified in the sample dnet.servers 
+   file to reflect the path you intend to use.
+
+2. Copy netdnet-server to the path specified in the dnet.servers file on
+   the remote machine.
+
+3. Put a mountlist entry for the network handler in the local machine's
+   DEVS:MOUNTLIST.  A sample mountlist entry is included in this 
+   distribution in the file "mountlist".  If you do not want the network 
+   handler in l:, replace the specified path with one of your own.
+
+4. Copy netdnet-handler from the HANDLER subdirectory to the path specified
+   in the mountlist on the local machine.
+
+5. Issue the CLI command "ASSIGN ROOT: <path>" on the remote machine.  The
+   network handler mounts the ROOT: device on the remote node as a network
+   node on the local node;  the place you point ROOT: to is where your
+   files will go.  Copy the file NODE.INFO from the distribution disk
+   to ROOT:.  This file contains the .info information for the remote node
+   that will be displayed on the workbench screen of the local node.  Feel
+   free to replace it with any DRAWER type .info file.
+
+6. Issue the CLI command "MOUNT NET:" on the local node.  The first 
+   reference to NET: after the MOUNT command will load the handler.  DNET
+   will load the server on the remote node automatically.
+
+============================================================================
+
+Once the NET: device is running, you can use the provided NETMOUNT command
+to allow access to other devices besides ROOT: on the remote machine.
+NETMOUNT is a temporary stopgap until a real ROOT: device is implemented
+that allows access to all devices on a machine via a single handler.
+
+For now, the NETMOUNT command format is
+
+NETMOUNT <local device> <node name> <remote device>
+
+where <local device>  is the name you MOUNTed (usually NET:)
+      <node name>     is the name you want to refer to the new entry as
+      <remote device> is the name of the device on the remote node to use
+      
+For example, 
+
+NETMOUNT NET: DF0 DF0:
+
+would allow you to access the floppy on the remote node by using the path
+NET:DF0.  Thus, 
+
+DIR NET:DF0
+
+would produce the same results as doing a DIR DF0: on the remote machine.
+
+
+============================================================================
+
+This version of NET: is dependent on DNET.  However, all DNET-specific calls
+are isolated in the files iodnet.c, handler/netdnet.c and server/netdnet.c.
+Functions in these files refer to functions in dnetlib.c;  dnetlib.c is
+part of Matt Dillon's DNET distribution and will not be required if you
+replace the functions in the three previously named files.
+
+The source directory contains all .c and .h files common to both the handler
+and the server ends of the network file system.  Handler-specific code 
+resides in the 'handler' subdirectory;  server-specific code resides in the
+'server' subdirectory; and utilities such as the 'handd' debugging tool,
+the 'netstat' tool to give statistics, the 'shutdown' command to kill the
+network, and so forth reside in the 'utilities' subdirectory.
+
+
+Contact us with any problems:
+
+PLINK:  DWALKER, JTOEBES
+BIX:    DJWALKER, JTOEBES
+USENET: ...mcnc!rti!sas!walker, ...mcnc!rti!sas!toebes
+        (Usenet connection is flakey)
+US MAIL:
+   Doug Walker
+   405 B3 Gooseneck Dr
+   Cary, NC 27513
+   USA
+
+   John Toebes
+   235 Trillingham Lane
+   Cary, NC 27513
+   USA
