@@ -1,0 +1,25 @@
+
+Version I.01
+
+The MOVEM instruction now works with all address registers, not just a7, when
+using the indirect addressing mode, e.g MOVEM.L d0-d1,(a0) now works.
+
+When sending an assembler listing to a file and a line was longer then LLEN
+the assembler freaked out and started to write several megabytes of spaces.
+This has now been corrected.
+
+
+Version I.02
+
+The menus doesn't trash under KickStart 2.0 anymore.
+
+CMP[.SIZE] (An)+,(An)+ is now properly converted to CMPM[.SIZE] (An)+,(An)+
+and doesn't report 'Invalid operand'.
+
+MOVE[.SIZE] SR,.. now works and doesn't report 'Undefined symbol ->SR'.
+
+XREFing a symbol more then once doesn't report 'Redefined symbol' .
+
+CLR, NEG, NEGX, NOT & TST now assums .W as default (as it should be) if no
+size is specified and doesn't report 'Invalid operand'.
+
